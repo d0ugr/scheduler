@@ -10,8 +10,9 @@ import DayList             from "components/DayList";
 import DayListItem         from "components/DayListItem";
 import InterviewerList     from "components/InterviewerList";
 import InterviewerListItem from "components/InterviewerListItem";
-import Appointment         from "components/Appointment/index";
+import Appointment         from "components/Appointment";
 import Header              from "components/Appointment/Header";
+import Empty               from "components/Appointment/Empty";
 
 
 
@@ -29,7 +30,8 @@ storiesOf("Button", module)
     <Button disabled onClick={action("button-clicked")}>
       Disabled
     </Button>
-  ));
+  ))
+;
 
 
 
@@ -42,7 +44,8 @@ storiesOf("DayListItem", module)
   .add("Full",       () => <DayListItem name="Monday" spots={0} />)
   .add("Clickable",  () => (
     <DayListItem name="Tuesday" setDay={(_event) => action("setDay")(1)} spots={5} />
-  ));
+  ))
+;
 
 
 
@@ -73,7 +76,8 @@ storiesOf("DayList", module)
   ))
   .add("Tuesday", () => (
     <DayList days={days} day={"Tuesday"} setDay={action("setDay")} />
-  ));
+  ))
+;
 
 
 
@@ -109,7 +113,8 @@ storiesOf("InterviewerListItem", module)
       avatar={interviewer.avatar}
       setInterviewer={(_event) => action("setInterviewer")(interviewer.id)}
     />
-  ));
+  ))
+;
 
 
 
@@ -137,7 +142,8 @@ storiesOf("InterviewerList", module)
       interviewer={3}
       setInterviewer={action("setInterviewer")}
     />
-  ));
+  ))
+;
 
 
 
@@ -147,8 +153,11 @@ storiesOf("Appointment", module)
   })
   .add("Appointment",      () => <Appointment />)
   .add("Appointment 12pm", () => <Appointment time="12pm" />)
-  .add("Header",      () => <Header />)
-  .add("Header 12pm", () => <Header time="12pm" />);
+  .add("Header",           () => <Header />)
+  .add("Header 12pm",      () => <Header time="12pm" />)
+  .add("Empty",            () => <Empty />)
+  .add("Empty Clickable" , () => <Empty onAdd={action("onAdd")} />)
+;
 
 
 
