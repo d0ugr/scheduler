@@ -14,6 +14,7 @@ import Appointment         from "components/Appointment";
 import Header              from "components/Appointment/Header";
 import Empty               from "components/Appointment/Empty";
 import Show                from "components/Appointment/Show";
+import Confirm             from "components/Appointment/Confirm";
 
 
 
@@ -152,25 +153,38 @@ storiesOf("Appointment", module)
   .addParameters({
     backgrounds: [{ name: "white", value: "#fff", default: true }]
   })
-  .add("Appointment",      () => <Appointment />)
-  .add("Appointment 12pm", () => <Appointment time="12pm" />)
-  .add("Header",           () => <Header />)
-  .add("Header 12pm",      () => <Header time="12pm" />)
-  .add("Empty",            () => <Empty />)
-  .add("Empty Clickable" , () => <Empty onAdd={action("onAdd")} />)
-  .add("Show",             () => <Show />)
-  .add("Show Names",       () => (
+  .add("Appointment",       () => <Appointment />)
+  .add("Appointment 12pm",  () => <Appointment time="12pm" />)
+
+  .add("Header",            () => <Header />)
+  .add("Header 12pm",       () => <Header time="12pm" />)
+
+  .add("Empty",             () => <Empty />)
+  .add("Empty Clickable",   () => <Empty onAdd={action("onAdd")} />)
+
+  .add("Show",              () => <Show />)
+  .add("Show Names",        () => (
     <Show
       student="Lydia Miller-Jones"
       interviewer={interviewer}
     />
   ))
-  .add("Show Clickable",   () => (
+  .add("Show Clickable",    () => (
     <Show
       student="Lydia Miller-Jones"
       interviewer={interviewer}
       onEdit={action("onEdit")}
       onDelete={action("onDelete")}
+    />
+  ))
+
+  .add("Confirm",           () => <Confirm />)
+  .add("Confirm Message",   () => <Confirm message="Delete the appointment?" />)
+  .add("Confirm Clickable", () => (
+    <Confirm
+      message="Delete the appointment?"
+      onConfirm={action("onConfirm")}
+      onCancel={action("onCancel")}
     />
   ))
 ;
