@@ -12,16 +12,16 @@ export default function Form(props) {
     interviewerId: null
   };
 
-  const [ stateData, setStateData ] = useState({
+  const [ state, setState ] = useState({
     studentName:   props.name        || "",
     interviewerId: props.interviewer || null
   });
 
   const updateState = (data) => {
-    setStateData(data ? {
-      ...stateData,
-      ...(data.name && data.value ? { [data.name]: data.value } : { ...data })
-    } : defaultState);
+    setState((prev) => (data ? {
+      ...prev,
+      ...(data.name && data.value ? { [data.name]: data.value } : data)
+    } : defaultState));
   };
 
   return (
@@ -32,14 +32,14 @@ export default function Form(props) {
             className="appointment__create-input text--semi-bold"
             type="text"
             name="studentName"
-            value={stateData.studentName}
+            value={state.studentName}
             placeholder="Enter student name"
             onChange={(event) => updateState(event.target)}
           />
         </form>
         <InterviewerList
           interviewers={props.interviewers}
-          interviewer={stateData.interviewerId}
+          interviewer={state.interviewerId}
           setInterviewer={(interviewerId) => updateState({ interviewerId })}
         />
       </section>
