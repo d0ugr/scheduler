@@ -44,6 +44,7 @@ storiesOf("DayListItem", module)
   .addParameters({
     backgrounds: [{ name: "dark", value: "#222f3e", default: true }]
   })
+  .add("Null",       () => <DayListItem />)
   .add("Unselected", () => <DayListItem name="Monday" spots={5} />)
   .add("Selected",   () => <DayListItem name="Monday" spots={5} selected />)
   .add("Full",       () => <DayListItem name="Monday" spots={0} />)
@@ -76,6 +77,9 @@ storiesOf("DayList", module)
   .addParameters({
     backgrounds: [{ name: "dark", value: "#222f3e", default: true }],
   })
+  .add("Null", () => (
+    <DayList />
+  ))
   .add("Monday", () => (
     <DayList days={days} day={"Monday"} setDay={action("setDay")} />
   ))
@@ -96,6 +100,9 @@ storiesOf("InterviewerListItem", module)
   .addParameters({
     backgrounds: [{ name: "dark", value: "#222f3e", default: true }]
   })
+  .add("Null", () => (
+    <InterviewerListItem />
+  ))
   .add("Unselected", () => (
     <InterviewerListItem
       id={interviewer.id}
@@ -135,6 +142,9 @@ storiesOf("InterviewerList", module)
   .addParameters({
     backgrounds: [{ name: "dark", value: "#222f3e", default: true }]
   })
+  .add("Null", () => (
+    <InterviewerList />
+  ))
   .add("Initial", () => (
     <InterviewerList
       interviewers={interviewers}
