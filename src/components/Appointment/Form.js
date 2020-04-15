@@ -8,13 +8,13 @@ import Button          from "../Button";
 export default function Form(props) {
 
   const defaultState = {
-    studentName: "",
-    ivwrId:      null
+    studentName:   "",
+    interviewerId: null
   };
 
   const [ stateData, setStateData ] = useState({
-    studentName: props.name || "",
-    ivwrId:      props.interviewer || null
+    studentName:   props.name        || "",
+    interviewerId: props.interviewer || null
   });
 
   const updateState = (data) => {
@@ -39,8 +39,8 @@ export default function Form(props) {
         </form>
         <InterviewerList
           interviewers={props.interviewers}
-          interviewer={stateData.ivwrId}
-          setInterviewer={(ivwrId) => updateState({ ivwrId })}
+          interviewer={stateData.interviewerId}
+          setInterviewer={(interviewerId) => updateState({ interviewerId })}
         />
       </section>
       <section className="appointment__card-right">
