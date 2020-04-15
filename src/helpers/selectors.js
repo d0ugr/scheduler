@@ -1,11 +1,11 @@
 
 
 
-export const getAppointmentsForDay = (state, day) =>
+export const getAppointmentsForDay = (state, dayId) =>
   (
     (
       ((state && state.days) || [])
-      .find((stateDay) => stateDay.name === day) || {}
+      .find((stateDay) => stateDay.id === dayId) || {}
     )
     .appointments || []
   )
