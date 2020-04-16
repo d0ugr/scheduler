@@ -12,23 +12,20 @@ import "components/Application.scss";
 export default function Application(_props) {
 
   const defaultState = {
-    selectedDay:      null,
-    days:             null,
-    appointments:     null,
-    appointmentItems: null
+    selectedDay:  null,
+    days:         null,
+    appointments: null,
+    schedule:     null
   };
 
   const [ state, setState ] = useState(defaultState);
 
   const updateState = useCallback((data) => {
     setState((prev) =>
-      (data
-        ? {
-          ...prev,
-          ...(data.name && data.value ? { [data.name]: data.value } : data)
-        }
-        : defaultState
-      )
+      (data ? {
+        ...prev,
+        ...(data.name && data.value ? { [data.name]: data.value } : data)
+      } : defaultState)
     );
   }, [ defaultState ]);
 
@@ -36,12 +33,14 @@ export default function Application(_props) {
     console.log("useEffect: Initial page load");
     Promise.all([
       Axios.get("/api/days"),
-      Axios.get("/api/appointments")
+      Axios.get("/api/appointments"),
+      Axios.get("/api/interviewers")
     ])
     .then((res) => {
       updateState({
         days:         res[0].data,
-        appointments: res[1].data
+        appointments: res[1].data,
+        interviewers: res[2].data
       })
     })
     .catch((err) => console.log(err));
@@ -51,13 +50,16 @@ export default function Application(_props) {
   useEffect(() => {
     console.log("useEffect: state.selectedDay, state.appointments");
     updateState({
-      appointmentItems: select.getAppointmentsForDay(state, state.selectedDay).map((appointment, _index) =>
-        <Appointment
-          key={appointment.id}
-          time={appointment.time}
-          interview={appointment.interview}
-        />
-      )})
+      schedule: select.getAppointmentsForDay(state, state.selectedDay).map((appointment, _index) => {
+        return (
+          <Appointment
+            key={appointment.id}
+            time={appointment.time}
+            interview={select.getInterview(state, appointment.interview)}
+          />
+        );
+      })
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.selectedDay, state.appointments ]);
 
@@ -84,7 +86,7 @@ export default function Application(_props) {
         />
       </section>
       <section className="schedule">
-        {state.appointmentItems}
+        {state.schedule}
       </section>
     </main>
   );
