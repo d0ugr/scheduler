@@ -70,12 +70,17 @@ export default function Application(_props) {
             time={appointment.time}
             interview={select.getInterview(state, appointment.interview)}
             interviewers={select.getInterviewersForDay(state, state.selectedDay)}
+            bookInterview={(interview) => bookInterview(appointment.id, interview)}
           />
         );
       })
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.selectedDay, state.appointments ]);
+
+  function bookInterview(id, interview) {
+    console.log(id, interview);
+  }
 
   // Return application stuff to render:
   return (
