@@ -6,13 +6,14 @@ export default function useVisualMode(initial) {
 
   const [ mode,    setMode    ] = useState(initial);
   const [ history, setHistory ] = useState([ initial ]);
-  // console.log("useVisualMode:", history);
 
-  function transition(newMode) {
+  function transition(newMode, replace = false) {
     setMode(newMode);
-    history.push(newMode);
+    (replace
+      ? history[history.length - 1] = newMode
+      : history.push(newMode)
+    );
     setHistory([ ...history ]);
-    // console.log("transition:", history);
   }
 
   function back() {
@@ -20,15 +21,10 @@ export default function useVisualMode(initial) {
       history.pop();
       setMode(history[history.length - 1]);
       setHistory([ ...history ]);
-      // console.log("back:", history);
     }
   }
 
-  return {
-    mode,
-    transition,
-    back
-  };
+  return { mode, transition, back };
 
 }
 
