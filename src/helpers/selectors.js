@@ -1,12 +1,17 @@
 
 
 
+// getAppointmentsForDay returns an array of appointment objects for the given day.
+
 export const getAppointmentsForDay = (state, dayId) =>
   ( ( ( (state && state.days) || []
       ).find((stateDay) => stateDay.id === dayId) || {}
     ).appointments || []
   ).map((appointmentId) => state.appointments[appointmentId])
 ;
+
+// getInterview returns a full interview object for an interview
+//    object coming from the appointments API.
 
 export const getInterview = (state, interview) =>
   ( state && state.interviewers && interview && interview.interviewer && {
