@@ -45,6 +45,7 @@ export default function Form(props) {
             name="studentName"
             value={state.studentName}
             placeholder="Enter student name"
+            autoFocus
             onChange={(event) => updateState(event.target)}
           />
         </form>
