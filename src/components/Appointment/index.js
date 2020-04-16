@@ -8,8 +8,9 @@ import Empty  from "./Empty";
 
 import useVisualMode from "../../hooks/useVisualMode";
 
-const EMPTY = "EMPTY";
-const SHOW  = "SHOW";
+const EMPTY  = "EMPTY";
+const SHOW   = "SHOW";
+const CREATE = "CREATE";
 
 
 
@@ -22,7 +23,7 @@ export default function Appointment(props) {
       <Header time={props.time} />
       {mode === EMPTY &&
         <Empty
-          onAdd={props.onAdd}
+          onAdd={() => transition(CREATE)}
         />
       }
       {mode === SHOW &&
