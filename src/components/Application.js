@@ -69,6 +69,7 @@ export default function Application(_props) {
             key={appointment.id}
             time={appointment.time}
             interview={select.getInterview(state, appointment.interview)}
+            interviewers={select.getInterviewersForDay(state, state.selectedDay)}
           />
         );
       })
