@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import axios         from "axios";
 
 import useStateObject from "./useStateObject";
+import * as select    from "helpers/selectors";
 
 axios.defaults.baseURL = "http://localhost:8001/api";
 
@@ -73,11 +74,15 @@ export default function useApplicationData() {
     return axios.put(`/appointments/${id}`, newAppointment)
       .then((_res) => {
         //console.log(`PUT /api/appointments/${id}`, res);
+        const newDays = [ ...state.days ];
+        const newAppointments = {
+          ...state.appointments,
+          [id]: newAppointment
+        };
+        select.updateSpotsForDay(newAppointments, state.days, state.selectedDay);
         updateState({
-          appointments: {
-            ...state.appointments,
-            [id]: newAppointment
-          }
+          days:         newDays,
+          appointments: newAppointments
         });
       })
       //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
@@ -89,16 +94,15 @@ export default function useApplicationData() {
   function cancelInterview(id) {
     console.log("cancelInterview: id:", id);
     return axios.delete(`/appointments/${id}`)
-      .then((res) => {
-        console.log(`DELETE /api/appointments/${id}`, res);
+      .then((_res) => {
+        //console.log(`DELETE /api/appointments/${id}`, res);
+        const newDays         = [ ...state.days         ];
+        const newAppointments = { ...state.appointments };
+        newAppointments[id].interview = null;
+        select.updateSpotsForDay(newAppointments, newDays, state.selectedDay);
         updateState({
-          appointments: {
-            ...state.appointments,
-            [id]: {
-              ...state.appointments[id],
-              interview: null
-            }
-          }
+          days:         newDays,
+          appointments: newAppointments
         });
       })
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
