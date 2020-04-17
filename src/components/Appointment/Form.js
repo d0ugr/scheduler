@@ -1,38 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 
 import InterviewerList from "../InterviewerList";
 import Button          from "../Button";
+
+import useStateObject from "../../hooks/useStateObject";
 
 
 
 export default function Form(props) {
 
-  // Default values for various states:
-  //    Components should have checks for nulls.
-  const defaultState = {
-    studentName:   "",
-    interviewerId: null
-  };
-
   // The state of things:
-  const [ state, setState ] = useState({
+  //    Initial default values are set here.
+  //    Components should have checks for nulls.
+  const { state, updateState } = useStateObject({
     studentName:   props.name        || "",
     interviewerId: props.interviewer || null
   });
-
-  // Generic state updating function:
-  //    If data is falsey, the state is reset to default.
-  //    Data should otherwise be an object.  If it contains "name" and "value" properties,
-  //    (i.e. from <input> attributes) those are used to set the value as a
-  //    "name: value" property in the state object.
-  //    Otherwise, the object is simply copied into the state object.
-  //    Existing properties will be updated if they exist.
-  const updateState = (data) => {
-    setState((prev) => (data ? {
-      ...prev,
-      ...(data.name && data.value ? { [data.name]: data.value } : data)
-    } : defaultState));
-  };
 
   // Return the form to render:
   return (
@@ -59,20 +42,11 @@ export default function Form(props) {
       <section className="appointment__card-right">
         <section className="appointment__actions">
           <Button danger
-            onClick={() => {
-              updateState(null);
-              props.onCancel();
-            }}
-          >
-            Cancel
-          </Button>
+            onClick={props.onCancel}
+          >Cancel</Button>
           <Button confirm
-            onClick={() =>
-              props.onSave(state.studentName, state.interviewerId)
-            }
-          >
-            Save
-          </Button>
+            onClick={() => props.onSave(state.studentName, state.interviewerId)}
+          >Save</Button>
         </section>
       </section>
     </main>
