@@ -89,7 +89,7 @@ export default function Application(_props) {
           }
         });
       })
-      .catch((err) => console.log(`PUT /api/appointments/${id}`, err));
+      //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
   }
 
   // Return application stuff to render:
