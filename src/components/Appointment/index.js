@@ -36,8 +36,8 @@ export default function Appointment(props) {
       student: name,
       interviewer
     }).then(() => transition(SHOW, true))
-      .catch((err) => {
-        console.log("saveInterview:", err)
+      .catch((_err) => {
+        //console.log("saveInterview:", err)
         transition(ERROR_SAVE, true);
       });
   }
@@ -46,8 +46,8 @@ export default function Appointment(props) {
     transition(DELETING, true);
     props.cancelInterview()
       .then(() => transition(EMPTY, true))
-      .catch((err) => {
-        console.log("deleteInterview:", err)
+      .catch((_err) => {
+        //console.log("deleteInterview:", err)
         transition(ERROR_DELETE, true);
       });
   }

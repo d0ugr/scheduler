@@ -16,21 +16,21 @@ import "components/Application.scss";
 
 export default function Application(_props) {
 
-  console.log("Application");
+  //console.log("Application");
 
   const [ state, setDay, bookInterview, cancelInterview ] = useApplicationData();
   const [ schedule, setSchedule ] = useState(null);
 
   // Update the schedule if the selected changes:
   useEffect(() => {
-    console.log("Application: useEffect: state.selectedDay:", state);
+    //console.log("Application: useEffect: state.selectedDay:", state);
     setCurrentSchedule();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.selectedDay ]);
 
   // Update the schedule if the appointments data changes:
   useEffect(() => {
-    console.log("Application: useEffect: state.appointments:", state);
+    //console.log("Application: useEffect: state.appointments:", state);
     setCurrentSchedule();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.appointments ]);

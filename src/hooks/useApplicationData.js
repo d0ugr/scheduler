@@ -27,7 +27,7 @@ const DEFAULT_STATE = {
 
 export default function useApplicationData() {
 
-  console.log("useApplicationData");
+  //console.log("useApplicationData");
 
   // The state of things:
   //    Initial default values are set here.
