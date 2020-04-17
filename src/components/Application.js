@@ -2,7 +2,7 @@
 //
 //    Main application component responsible for rendering everything.
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import DayList     from "./DayList";
 import Appointment from "components/Appointment";
@@ -19,39 +19,6 @@ export default function Application(_props) {
   //console.log("Application");
 
   const [ state, setDay, bookInterview, cancelInterview ] = useApplicationData();
-  const [ schedule, setSchedule ] = useState(null);
-
-  // Update the schedule if the selected changes:
-  useEffect(() => {
-    //console.log("Application: useEffect: state.selectedDay:", state);
-    setCurrentSchedule();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ state.selectedDay ]);
-
-  // Update the schedule if the appointments data changes:
-  useEffect(() => {
-    //console.log("Application: useEffect: state.appointments:", state);
-    setCurrentSchedule();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ state.appointments ]);
-
-  // setCurrentSchedule prepares an array of Appointment components to render.
-
-  const setCurrentSchedule = () => {
-    setSchedule(
-      select.getAppointmentsForDay(state, state.selectedDay)
-      .map((appointment, _index) => (
-        <Appointment
-          key={appointment.id}
-          time={appointment.time}
-          interview={select.getInterview(state, appointment.interview)}
-          interviewers={select.getInterviewersForDay(state, state.selectedDay)}
-          bookInterview={(interview) => bookInterview(appointment.id, interview)}
-          cancelInterview={() => cancelInterview(appointment.id)}
-        />
-      ))
-    );
-  };
 
   // Return application stuff to render:
   return (
@@ -76,8 +43,18 @@ export default function Application(_props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
-        {schedule}
+      <section className="schedule">{
+        select.getAppointmentsForDay(state, state.selectedDay)
+        .map((appointment, _index) =>
+          <Appointment
+            key={appointment.id}
+            time={appointment.time}
+            interview={select.getInterview(state, appointment.interview)}
+            interviewers={select.getInterviewersForDay(state, state.selectedDay)}
+            bookInterview={(interview) => bookInterview(appointment.id, interview)}
+            cancelInterview={() => cancelInterview(appointment.id)}
+          />
+        )}
       </section>
     </main>
   );
