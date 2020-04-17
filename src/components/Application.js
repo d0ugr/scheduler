@@ -5,7 +5,7 @@
 import React from "react";
 
 import DayList     from "./DayList";
-import Appointment from "components/Appointment";
+import Appointment from "./Appointment";
 import * as select from "helpers/selectors";
 
 import useApplicationData from "../hooks/useApplicationData";
