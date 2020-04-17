@@ -2,19 +2,21 @@ import React from "react";
 
 import "./styles.scss";
 
-import Header from "./Header";
-import Show   from "./Show";
-import Empty  from "./Empty";
-import Form   from "./Form";
-import Status from "./Status";
+import Header  from "./Header";
+import Show    from "./Show";
+import Empty   from "./Empty";
+import Form    from "./Form";
+import Status  from "./Status";
+import Confirm from "./Confirm";
 
 import useVisualMode from "../../hooks/useVisualMode";
 
-const EMPTY    = "EMPTY";
-const SHOW     = "SHOW";
-const CREATE   = "CREATE";
-const SAVING   = "SAVING";
-const DELETING = "DELETING";
+const EMPTY         = "EMPTY";
+const SHOW           = "SHOW";
+const CREATE         = "CREATE";
+const SAVING         = "SAVING";
+const CONFIRM_DELETE = "CONFIRM_DELETE";
+const DELETING       = "DELETING";
 
 
 
@@ -61,7 +63,7 @@ export default function Appointment(props) {
           student={props.interview.student}
           interviewerName={props.interview.interviewer.name}
           // onEdit={() => edit(props.id)}
-          onDelete={deleteInterview}
+          onDelete={() => transition(CONFIRM_DELETE)}
         />
       }
       {mode === CREATE &&
@@ -74,6 +76,13 @@ export default function Appointment(props) {
       {mode === SAVING &&
         <Status
           message={"Saving..."}
+        />
+      }
+      {mode === CONFIRM_DELETE &&
+        <Confirm
+          message={"Are you super duper sure you want to nuke this interview?"}
+          onConfirm={deleteInterview}
+          onCancel={back}
         />
       }
       {mode === DELETING &&
