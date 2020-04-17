@@ -26,9 +26,12 @@ export default function Appointment(props) {
     props.bookInterview({
       student: name,
       interviewer
+    })
+    .then(() => transition(SHOW))
+    .catch(() => {
+      console.log("save: catch")
+      transition(EMPTY);
     });
-    //console.log("transition: SHOW");
-    transition(SHOW);
   }
 
   return (

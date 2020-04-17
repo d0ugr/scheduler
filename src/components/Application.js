@@ -75,15 +75,21 @@ export default function Application(_props) {
 
   function bookInterview(id, interview) {
     //console.log("bookInterview: id, interview:", id, interview);
-    updateState({
-      appointments: {
-        ...state.appointments,
-        [id]: {
-          ...state.appointments[id],
-          interview: { ...interview }
-        }
-      }
-    });
+    const newAppointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    return Axios.put(`/api/appointments/${id}`, newAppointment)
+      .then((_res) => {
+        //console.log(`PUT /api/appointments/${id}`, res);
+        updateState({
+          appointments: {
+            ...state.appointments,
+            [id]: newAppointment
+          }
+        });
+      })
+      .catch((err) => console.log(`PUT /api/appointments/${id}`, err));
   }
 
   // Return application stuff to render:
