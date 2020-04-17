@@ -67,6 +67,7 @@ export default function Application(_props) {
             interview={select.getInterview(state, appointment.interview)}
             interviewers={select.getInterviewersForDay(state, state.selectedDay)}
             bookInterview={(interview) => bookInterview(appointment.id, interview)}
+            deleteInterview={() => deleteInterview(appointment.id)}
           />
         );
       })
@@ -90,6 +91,24 @@ export default function Application(_props) {
         });
       })
       //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
+  }
+
+  function deleteInterview(id) {
+    console.log("deleteInterview: id:", id);
+    return Axios.delete(`/api/appointments/${id}`)
+      .then((res) => {
+        console.log(`DELETE /api/appointments/${id}`, res);
+        updateState({
+          appointments: {
+            ...state.appointments,
+            [id]: {
+              ...state.appointments[id],
+              interview: null
+            }
+          }
+        });
+      })
+      //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
   }
 
   // Return application stuff to render:
