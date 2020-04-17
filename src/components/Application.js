@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
-import Axios from "axios";
+// Application.js
+//
+//    Main application component responsible for rendering everything.
+
+import React, { useState, useEffect } from "react";
 
 import DayList     from "./DayList";
 import Appointment from "components/Appointment";
 import * as select from "helpers/selectors";
 
-import useStateObject from "../hooks/useStateObject";
+import useApplicationData from "../hooks/useApplicationData";
 
 import "components/Application.scss";
 
@@ -13,103 +16,42 @@ import "components/Application.scss";
 
 export default function Application(_props) {
 
-  // The state of things:
-  //    Default values are passed here.
-  //    Components should have checks for nulls.
-  const { state, updateState } = useStateObject({
-    selectedDay:  null,
-    days:         null,
-    appointments: null,
-    schedule:     null
-  });
+  console.log("Application");
 
-  // Load data from the API server on initial page load
-  //    and save it in the state object:
-  useEffect(() => {
-    //console.log("useEffect: Page load");
-    Promise.all([
-      Axios.get("/api/days"),
-      Axios.get("/api/appointments"),
-      Axios.get("/api/interviewers")
-    ])
-    .then((res) => {
-      updateState({
-        days:         res[0].data,
-        appointments: res[1].data,
-        interviewers: res[2].data
-      })
-    })
-    .catch((err) => console.log(err));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [ state, setDay, bookInterview, cancelInterview ] = useApplicationData();
+  const [ schedule, setSchedule ] = useState(null);
 
-  // Update the schedule if the selected day or appointments data change:
+  // Update the schedule if the selected changes:
   useEffect(() => {
-    //console.log("useEffect: state.selectedDay:", state);
-    updateSchedule();
+    console.log("Application: useEffect: state.selectedDay:", state);
+    setCurrentSchedule();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.selectedDay ]);
 
+  // Update the schedule if the appointments data changes:
   useEffect(() => {
-    //console.log("useEffect: state.appointments:", state);
-    updateSchedule();
+    console.log("Application: useEffect: state.appointments:", state);
+    setCurrentSchedule();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ state.appointments ]);
 
-  const updateSchedule = () => {
-    //console.log("updateSchedule");
-    updateState({
-        schedule: select.getAppointmentsForDay(state, state.selectedDay).map((appointment, _index) => {
-        return (
-          <Appointment
-            key={appointment.id}
-            time={appointment.time}
-            interview={select.getInterview(state, appointment.interview)}
-            interviewers={select.getInterviewersForDay(state, state.selectedDay)}
-            bookInterview={(interview) => bookInterview(appointment.id, interview)}
-            cancelInterview={() => cancelInterview(appointment.id)}
-          />
-        );
-      })
-    });
+  // setCurrentSchedule prepares an array of Appointment components to render.
+
+  const setCurrentSchedule = () => {
+    setSchedule(
+      select.getAppointmentsForDay(state, state.selectedDay)
+      .map((appointment, _index) => (
+        <Appointment
+          key={appointment.id}
+          time={appointment.time}
+          interview={select.getInterview(state, appointment.interview)}
+          interviewers={select.getInterviewersForDay(state, state.selectedDay)}
+          bookInterview={(interview) => bookInterview(appointment.id, interview)}
+          cancelInterview={() => cancelInterview(appointment.id)}
+        />
+      ))
+    );
   };
-
-  function bookInterview(id, interview) {
-    //console.log("bookInterview: id, interview:", id, interview);
-    const newAppointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    return Axios.put(`/api/appointments/${id}`, newAppointment)
-      .then((_res) => {
-        //console.log(`PUT /api/appointments/${id}`, res);
-        updateState({
-          appointments: {
-            ...state.appointments,
-            [id]: newAppointment
-          }
-        });
-      })
-      //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
-  }
-
-  function cancelInterview(id) {
-    console.log("deleteInterview: id:", id);
-    return Axios.delete(`/api/appointments/${id}`)
-      .then((res) => {
-        console.log(`DELETE /api/appointments/${id}`, res);
-        updateState({
-          appointments: {
-            ...state.appointments,
-            [id]: {
-              ...state.appointments[id],
-              interview: null
-            }
-          }
-        });
-      })
-      //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
-  }
 
   // Return application stuff to render:
   return (
@@ -125,7 +67,7 @@ export default function Application(_props) {
           <DayList
             days={state.days}
             selectedDay={state.selectedDay}
-            setDay={day => updateState({ selectedDay: day })}
+            setDay={setDay}
           />
         </nav>
         <img
@@ -135,7 +77,7 @@ export default function Application(_props) {
         />
       </section>
       <section className="schedule">
-        {state.schedule}
+        {schedule}
       </section>
     </main>
   );
