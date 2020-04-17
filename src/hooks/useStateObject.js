@@ -1,3 +1,7 @@
+// useStateObject.js
+//
+//    Enhanced useState wrapper hook.
+
 import { useState, useCallback } from "react";
 
 
