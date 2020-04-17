@@ -11,9 +11,10 @@ import Confirm from "./Confirm";
 
 import useVisualMode from "../../hooks/useVisualMode";
 
-const EMPTY         = "EMPTY";
+const EMPTY          = "EMPTY";
 const SHOW           = "SHOW";
 const CREATE         = "CREATE";
+const EDIT           = "EDIT";
 const SAVING         = "SAVING";
 const CONFIRM_DELETE = "CONFIRM_DELETE";
 const DELETING       = "DELETING";
@@ -62,12 +63,21 @@ export default function Appointment(props) {
         <Show
           student={props.interview.student}
           interviewerName={props.interview.interviewer.name}
-          // onEdit={() => edit(props.id)}
+          onEdit={() => transition(EDIT)}
           onDelete={() => transition(CONFIRM_DELETE)}
         />
       }
       {mode === CREATE &&
         <Form
+          interviewers={props.interviewers}
+          onSave={saveInterview}
+          onCancel={back}
+        />
+      }
+      {mode === EDIT &&
+        <Form
+          name={props.interview.student}
+          interviewer={props.interview.interviewer.id}
           interviewers={props.interviewers}
           onSave={saveInterview}
           onCancel={back}
