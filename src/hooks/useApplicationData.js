@@ -1,6 +1,6 @@
 // useApplicationData.js
 //
-//    Manages application state.
+//    Custom hook that manages application state.
 
 import { useEffect } from "react";
 import axios         from "axios";
@@ -15,7 +15,7 @@ axios.defaults.baseURL = "http://localhost:8001/api";
 // Default values for the application state:
 
 const DEFAULT_STATE = {
-  selectedDay:  null,
+  selectedDay:  1, // null
   days:         null,
   appointments: null,
   schedule:     null
@@ -38,7 +38,7 @@ export default function useApplicationData() {
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
-    console.log("useApplicationData: useEffect: Page load");
+    //console.log("useApplicationData: useEffect: Page load");
     Promise.all([
       axios.get("/days"),
       axios.get("/appointments"),

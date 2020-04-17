@@ -26,7 +26,7 @@ const ERROR_DELETE   = "ERROR_DELETE";
 
 export default function Appointment(props) {
 
-  //console.log("Appointment", props);
+  //console.log("Appointment");
 
   const { mode, transition, back } = useVisualMode(props.interview ? SHOW : EMPTY);
 
