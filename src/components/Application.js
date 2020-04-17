@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import Axios from "axios";
 
 import DayList     from "./DayList";
 import Appointment from "components/Appointment";
 import * as select from "helpers/selectors";
+
+import useStateObject from "../hooks/useStateObject";
 
 import "components/Application.scss";
 
@@ -11,38 +13,20 @@ import "components/Application.scss";
 
 export default function Application(_props) {
 
-  // Default values for various states:
+  // The state of things:
+  //    Default values are passed here.
   //    Components should have checks for nulls.
-  const defaultState = {
+  const { state, updateState } = useStateObject({
     selectedDay:  null,
     days:         null,
     appointments: null,
     schedule:     null
-  };
-
-  // The state of things:
-  const [ state, setState ] = useState(defaultState);
-
-  // Generic state updating function:
-  //    If data is falsey, the state is reset to default.
-  //    Data should otherwise be an object.  If it contains "name" and "value" properties,
-  //    (i.e. from <input> attributes) those are used to set the value as a
-  //    "name: value" property in the state object.
-  //    Otherwise, the object is simply copied into the state object.
-  //    Existing properties will be updated if they exist.
-  const updateState = useCallback((data) => {
-    setState((prev) =>
-      (data ? {
-        ...prev,
-        ...(data.name && data.value ? { [data.name]: data.value } : data)
-      } : defaultState)
-    );
-  }, [ defaultState ]);
+  });
 
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
-    //console.log("useEffect: Initial page load");
+    //console.log("useEffect: Page load");
     Promise.all([
       Axios.get("/api/days"),
       Axios.get("/api/appointments"),
@@ -61,9 +45,21 @@ export default function Application(_props) {
 
   // Update the schedule if the selected day or appointments data change:
   useEffect(() => {
-    //console.log("useEffect: state.selectedDay, state.appointments");
+    //console.log("useEffect: state.selectedDay:", state);
+    updateSchedule();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ state.selectedDay ]);
+
+  useEffect(() => {
+    //console.log("useEffect: state.appointments:", state);
+    updateSchedule();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ state.appointments ]);
+
+  const updateSchedule = () => {
+    //console.log("updateSchedule");
     updateState({
-      schedule: select.getAppointmentsForDay(state, state.selectedDay).map((appointment, _index) => {
+        schedule: select.getAppointmentsForDay(state, state.selectedDay).map((appointment, _index) => {
         return (
           <Appointment
             key={appointment.id}
@@ -74,12 +70,20 @@ export default function Application(_props) {
           />
         );
       })
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ state.selectedDay, state.appointments ]);
+    });
+  };
 
   function bookInterview(id, interview) {
-    console.log(id, interview);
+    //console.log("bookInterview: id, interview:", id, interview);
+    updateState({
+      appointments: {
+        ...state.appointments,
+        [id]: {
+          ...state.appointments[id],
+          interview: { ...interview }
+        }
+      }
+    });
   }
 
   // Return application stuff to render:
