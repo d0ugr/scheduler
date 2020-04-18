@@ -13,12 +13,14 @@ export default function useVisualMode(initial) {
   const [ history, setHistory ] = useState([ initial ]);
 
   function transition(newMode, replace = false) {
-    setMode(newMode);
-    (replace
-      ? history[history.length - 1] = newMode
-      : history.push(newMode)
-    );
-    setHistory([ ...history ]);
+    if (newMode !== mode) {
+      setMode(newMode);
+      (replace
+        ? history[history.length - 1] = newMode
+        : history.push(newMode)
+      );
+      setHistory([ ...history ]);
+    }
   }
 
   function back() {
