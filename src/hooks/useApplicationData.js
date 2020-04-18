@@ -7,13 +7,13 @@ import axios from "axios";
 
 // import useStateObject from "./useStateObject";
 // import * as select    from "helpers/selectors";
+import SocketHandler from "./useSocket";
 
-axios.defaults.baseURL = "http://localhost:8001/api";
 
 
+const BASE_URL = "http://localhost:8001";
 
 // Default values for the application state:
-
 const DEFAULT_STATE = {
   selectedDay:  1, // null
   days:         null,
@@ -24,6 +24,10 @@ const SET_DAY              = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW        = "SET_INTERVIEW";
 const UPDATE_SPOTS         = "UPDATE_SPOTS";
+
+
+
+axios.defaults.baseURL = `${BASE_URL}/api`;
 
 
 
@@ -83,6 +87,8 @@ export default function useApplicationData() {
     }
   }
 
+  const socket = SocketHandler(BASE_URL);
+
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
@@ -92,7 +98,7 @@ export default function useApplicationData() {
       axios.get("/appointments"),
       axios.get("/interviewers")
     ])
-    .then((req) =>
+    .then((req) => {
       // updateState({
       //   days:         res[0].data,
       //   appointments: res[1].data,
@@ -104,7 +110,19 @@ export default function useApplicationData() {
         appointments: req[1].data,
         interviewers: req[2].data
       })
-    )
+      socket.on("open", function() {
+        console.log("socket.open");
+        socket.emit("ping");
+      });
+      socket.on("close", function() {
+        console.log("socket.close");
+      });
+      socket.on("message", function(data) {
+        console.log("socket.message", data);
+        dispatch(data);
+      });
+      socket.open();
+    })
     .catch((err) => console.log("useApplicationData: useEffect[]: Promise.all error:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
