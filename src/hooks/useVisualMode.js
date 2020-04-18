@@ -1,3 +1,8 @@
+// useVisualMode.js
+//
+// Hook used to implement appointment transitions
+//    and record their history.
+
 import { useState } from "react";
 
 
