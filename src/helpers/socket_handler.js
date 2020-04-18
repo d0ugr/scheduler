@@ -1,14 +1,11 @@
-import EventHandler from "./useEvents";
+// socket_handler.js
+//
+// A relatively simple wrapper for a WebSocket connection.
 
-const eh = EventHandler();
+import EventHandler from "./event_handler";
+import * as util    from "./util";
 
 
-
-// const WS_INTERVAL_PING      = 15 * 1000;
-// //const WS_TIMEOUT_PING       =  3 * 1000;
-// const WS_INTERVAL_RECONNECT =  1 * 1000;
-// const WS_TIMEOUT_RECONNECT  = 15 * 1000;
-// const WS_MSG_ACK_TIMEOUT    = 10 * 1000;
 
 // WebSocket close codes:
 
@@ -44,37 +41,32 @@ export const WS_CC_TLS_ERROR            = 1015;
 
 
 
-const httpToWs = function(url) {
-  try {
-    return url
-      .replace("http://",  "ws://" )
-      .replace("https://", "wss://");
-  } catch (err) {
-    return null;
-  }
-}
+// Initialize the event handler for socket events:
+const eh = EventHandler();
 
 
+
+// SocketHandler is a relatively simple wrapper for a WebSocket connection.
 
 export default function SocketHandler(url) {
 
   let ws        = null;
-  let wsUrl     = httpToWs(url) || httpToWs(document.location.href);
+  let socketUrl = util.httpToWs(url) || util.httpToWs(document.location.href);
   let connected = false;
 
   function open(url) {
 
-    wsUrl = httpToWs(url) || wsUrl;
-    ws    = new WebSocket(wsUrl);
+    socketUrl = util.httpToWs(url) || socketUrl;
+    ws        = new WebSocket(socketUrl);
 
-    ws.addEventListener("open", function(_event) {
+    ws.addEventListener("open", function(event) {
       connected = true;
-      eh.trigger("open");
+      eh.trigger("open", event);
     });
 
-    ws.addEventListener("close", function(_event) {
+    ws.addEventListener("close", function(event) {
       connected = false;
-      eh.trigger("close");
+      eh.trigger("close", event);
     });
 
     ws.addEventListener("message", function(event) {
@@ -84,7 +76,7 @@ export default function SocketHandler(url) {
       } catch (err) {
         message = event.data;
       }
-      eh.trigger("message", message);
+      eh.trigger("message", message, event);
     });
 
     ws.addEventListener("error", function(event) {
@@ -97,7 +89,7 @@ export default function SocketHandler(url) {
 
   function close(code, reason) {
 
-    if (typeof code   !== "number") code   = 1001;  // Going away
+    if (typeof code   !== "number") code   = WS_CC_GOING_AWAY;
     if (typeof reason !== "string") reason = "";
     console.log("SocketHandler.close", `${code}, "${reason}"`);
     try {
@@ -129,8 +121,6 @@ export default function SocketHandler(url) {
 
   }
 
-
-
   // SocketHandler.ping simply pings the server to keep the connection alive.
 
   function ping() {
@@ -145,9 +135,9 @@ export default function SocketHandler(url) {
 
   }
 
+  // Export functions:
 
-
-  return { open, close, connected, on: eh.on, emit, ping };
+  return { on: eh.on, open, close, connected, emit, ping };
 
 }
 

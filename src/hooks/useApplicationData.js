@@ -1,13 +1,13 @@
 // useApplicationData.js
 //
-//    Custom hook that manages application state.
+// Custom hook that manages application state
+//    and performs network API requests.
 
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 
-// import useStateObject from "./useStateObject";
-// import * as select    from "helpers/selectors";
-import SocketHandler from "./useSocket";
+// import * as select    from "../helpers/selectors";
+import SocketHandler from "../helpers/socket_handler";
 
 
 
@@ -31,8 +31,36 @@ axios.defaults.baseURL = `${BASE_URL}/api`;
 
 
 
+// updateState adds/updates properties in the given state object.
+//
+//    state   Object   State object to modify.
+//    data    Object   Properties to update state with.
+//
+//    If data is not an object, nothing happens.
+//    If it contains "name" and "value" properties,
+//    (i.e. from <input> attributes) those are used to set the value as a
+//    "name: value" property in the state object.
+//    Otherwise, the object is simply copied into the state object.
+//    Existing properties will be updated if they exist.
+//
+// Returns a copy of the state object with any updates.
+
+const updateState = (state, data) => {
+  try {
+    return {
+      ...state,
+      ...(data.name && data.value ? { [data.name]: data.value } : data)
+    };
+  } catch (err) {
+    return state;
+  }
+};
+
+
+
 // useApplicationData manages application state separately from
 //    the Application component (which handles rendering).
+//    Also provides functions that update the database via the API.
 
 export default function useApplicationData() {
 
@@ -44,23 +72,46 @@ export default function useApplicationData() {
   // const { state, updateState } = useStateObject(DEFAULT_STATE);
   const [ state, dispatch ] = useReducer(reducer, DEFAULT_STATE);
 
+  // reducer is called by dispatch with the current state and action data in an object.
+  //
+  // Returns an object to update the state with.
+  //    Returning the current state object causes React to do nothing
+  //    (i.e. if an error occurs).
+
   function reducer(state, action) {
+    //console.log("useApplicationData: reducer:", action.type);
     switch (action.type) {
-      case SET_DAY:
-        return {
-          ...state,
-          selectedDay: (action.dayId || state.selectedDay)
-        };
+
+      // Set general application data.
+      //
+      //    days           Array    Array of day information
+      //                              (array of appointment IDs, array of interviewer IDs,
+      //                              and number of available interview spots).
+      //    appointments   Object   All interview appointment objects.
+      //    interviewers   Object   All interviewer objects.
+
       case SET_APPLICATION_DATA:
-        return {
-          ...state,
+        return updateState(state, {
           days:         [ ...(action.days         || state.days        ) ],
           appointments: { ...(action.appointments || state.appointments) },
           interviewers: { ...(action.interviewers || state.interviewers) }
-        };
+        });
+
+      // Set the currently selected day in the sidebar.
+      //
+      //    dayId   Number   Day ID to set.
+
+      case SET_DAY:
+        return updateState(state, {
+          selectedDay: (action.dayId || state.selectedDay)
+        });
+
+      // Update an interview appointment data.
+      //
+      //    interview   Object   Interview data object, or null to clear it.
+
       case SET_INTERVIEW:
-        return {
-          ...state,
+        return updateState(state, {
           appointments: {
             ...state.appointments,
             [action.id]: {
@@ -68,18 +119,32 @@ export default function useApplicationData() {
               interview: { ...action.interview }
             }
           }
-        };
+        });
+
+      // Update the number of interview appointment spots for a given day.
+      //
+      //    dayId   Number   Day ID to update the number of spots for.
+
       case UPDATE_SPOTS:
-        const newState = { ...state };
         try {
-          const day = newState.days.find((day) => day.id === action.dayId);
-          day.spots = day.appointments
-            .reduce((spots, appointmentId) =>
-              spots + (!state.appointments[appointmentId].interview ? 0 : 1),
-              0
-            );
-        } catch (err) {}
-        return newState;
+          const days = { ...state.days };
+          try {
+            const day = days.find((day) => day.id === action.dayId);
+            day.spots = day.appointments
+              .reduce((spots, appointmentId) =>
+                spots + (!state.appointments[appointmentId].interview ? 0 : 1),
+                0
+              );
+            return updateState(state, { days });
+          // If the data is invalid, returning the existing state will
+          //    cause React to do nothing:
+          } catch (err) {
+            return state;
+          }
+        } catch (err) {
+          return state;
+        }
+
       default:
         throw new Error(
           `useApplicationData: reducer: Unsupported action type: ${action.type}`
@@ -99,33 +164,41 @@ export default function useApplicationData() {
       axios.get("/interviewers")
     ])
     .then((req) => {
-      // updateState({
-      //   days:         res[0].data,
-      //   appointments: res[1].data,
-      //   interviewers: res[2].data
-      // })
+      // Update the application state:
+      //updateState({
+      //  days:         res[0].data,
+      //  appointments: res[1].data,
+      //  interviewers: res[2].data
+      //})
       dispatch({
         type:         SET_APPLICATION_DATA,
         days:         req[0].data,
         appointments: req[1].data,
         interviewers: req[2].data
       })
-      socket.on("open", function() {
-        console.log("socket.open");
-        socket.emit("ping");
-      });
-      socket.on("close", function() {
-        console.log("socket.close");
-      });
-      socket.on("message", function(data) {
-        console.log("socket.message", data);
-        dispatch(data);
-      });
-      socket.open();
+      // Set up the WebSocket connection:
+      socket
+        //.on("open", function(event) {
+        //  console.log("socket.open", event);
+        //  socket.ping();
+        //})
+        //.on("close", function(event) {
+        //  console.log("socket.close", event);
+        //})
+        .on("message", function(message, event) {
+          //console.log("socket.message", message, event);
+          dispatch(message);
+        })
+        .on("error", function(event) {
+          console.log("socket.error", event);
+        })
+        .open();
     })
     .catch((err) => console.log("useApplicationData: useEffect[]: Promise.all error:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
 
   // setDay sets the currently selected day chosen in the sidebar.
   //    This will trigger an effect in Application that re-renders the schedule.
@@ -178,6 +251,8 @@ export default function useApplicationData() {
       })
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
   }
+
+
 
   return [ state, setDay, bookInterview, cancelInterview ];
 
