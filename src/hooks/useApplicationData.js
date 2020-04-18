@@ -2,11 +2,11 @@
 //
 //    Custom hook that manages application state.
 
-import { useEffect } from "react";
-import axios         from "axios";
+import { useEffect, useReducer } from "react";
+import axios from "axios";
 
-import useStateObject from "./useStateObject";
-import * as select    from "helpers/selectors";
+// import useStateObject from "./useStateObject";
+// import * as select    from "helpers/selectors";
 
 axios.defaults.baseURL = "http://localhost:8001/api";
 
@@ -17,9 +17,13 @@ axios.defaults.baseURL = "http://localhost:8001/api";
 const DEFAULT_STATE = {
   selectedDay:  1, // null
   days:         null,
-  appointments: null,
-  schedule:     null
+  appointments: null
 };
+
+const SET_DAY              = "SET_DAY";
+const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+const SET_INTERVIEW        = "SET_INTERVIEW";
+const UPDATE_SPOTS         = "UPDATE_SPOTS";
 
 
 
@@ -33,25 +37,75 @@ export default function useApplicationData() {
   // The state of things:
   //    Initial default values are set here.
   //    Components should have checks for nulls.
-  const { state, updateState } = useStateObject(DEFAULT_STATE);
+  // const { state, updateState } = useStateObject(DEFAULT_STATE);
+  const [ state, dispatch ] = useReducer(reducer, DEFAULT_STATE);
+
+  function reducer(state, action) {
+    switch (action.type) {
+      case SET_DAY:
+        return {
+          ...state,
+          selectedDay: (action.dayId || state.selectedDay)
+        };
+      case SET_APPLICATION_DATA:
+        return {
+          ...state,
+          days:         [ ...(action.days         || state.days        ) ],
+          appointments: { ...(action.appointments || state.appointments) },
+          interviewers: { ...(action.interviewers || state.interviewers) }
+        };
+      case SET_INTERVIEW:
+        return {
+          ...state,
+          appointments: {
+            ...state.appointments,
+            [action.id]: {
+              ...state.appointments[action.id],
+              interview: { ...action.interview }
+            }
+          }
+        };
+      case UPDATE_SPOTS:
+        const newState = { ...state };
+        try {
+          const day = newState.days.find((day) => day.id === action.dayId);
+          day.spots = day.appointments
+            .reduce((spots, appointmentId) =>
+              spots + (!state.appointments[appointmentId].interview ? 0 : 1),
+              0
+            );
+        } catch (err) {}
+        return newState;
+      default:
+        throw new Error(
+          `useApplicationData: reducer: Unsupported action type: ${action.type}`
+        );
+    }
+  }
 
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
-    //console.log("useApplicationData: useEffect: Page load");
+    //console.log("useApplicationData: useEffect[]: Page load");
     Promise.all([
       axios.get("/days"),
       axios.get("/appointments"),
       axios.get("/interviewers")
     ])
-    .then((res) => {
-      updateState({
-        days:         res[0].data,
-        appointments: res[1].data,
-        interviewers: res[2].data
+    .then((req) =>
+      // updateState({
+      //   days:         res[0].data,
+      //   appointments: res[1].data,
+      //   interviewers: res[2].data
+      // })
+      dispatch({
+        type:         SET_APPLICATION_DATA,
+        days:         req[0].data,
+        appointments: req[1].data,
+        interviewers: req[2].data
       })
-    })
-    .catch((err) => console.log(err));
+    )
+    .catch((err) => console.log("useApplicationData: useEffect[]: Promise.all error:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,7 +113,8 @@ export default function useApplicationData() {
   //    This will trigger an effect in Application that re-renders the schedule.
 
   function setDay(dayId) {
-    updateState({ selectedDay: dayId });
+    // updateState({ selectedDay: dayId });
+    dispatch({ type: SET_DAY, dayId });
   }
 
   // bookInterview saves an interview appointment
@@ -74,16 +129,15 @@ export default function useApplicationData() {
     return axios.put(`/appointments/${id}`, newAppointment)
       .then((_res) => {
         //console.log(`PUT /api/appointments/${id}`, res);
-        const newDays = [ ...state.days ];
-        const newAppointments = {
+        const days = [ ...state.days ];
+        const appointments = {
           ...state.appointments,
           [id]: newAppointment
         };
-        select.updateSpotsForDay(newAppointments, state.days, state.selectedDay);
-        updateState({
-          days:         newDays,
-          appointments: newAppointments
-        });
+        // select.updateSpotsForDay(appointments, state.days, state.selectedDay);
+        // updateState({ days, appointments });
+        dispatch({ type: SET_APPLICATION_DATA, days, appointments });
+        dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
   }
@@ -96,14 +150,13 @@ export default function useApplicationData() {
     return axios.delete(`/appointments/${id}`)
       .then((_res) => {
         //console.log(`DELETE /api/appointments/${id}`, res);
-        const newDays         = [ ...state.days         ];
-        const newAppointments = { ...state.appointments };
-        newAppointments[id].interview = null;
-        select.updateSpotsForDay(newAppointments, newDays, state.selectedDay);
-        updateState({
-          days:         newDays,
-          appointments: newAppointments
-        });
+        const days         = [ ...state.days         ];
+        const appointments = { ...state.appointments };
+        appointments[id].interview = null;
+        // select.updateSpotsForDay(appointments, days, state.selectedDay);
+        // updateState({ days, appointments });
+        dispatch({ type: SET_APPLICATION_DATA, days, appointments });
+        dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
   }
