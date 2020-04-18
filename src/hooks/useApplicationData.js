@@ -11,8 +11,6 @@ import SocketHandler from "../helpers/socket_handler";
 
 
 
-const BASE_URL = "http://localhost:8001";
-
 // Default values for the application state:
 const DEFAULT_STATE = {
   selectedDay:  1, // null
@@ -20,6 +18,7 @@ const DEFAULT_STATE = {
   appointments: null
 };
 
+// useReducer dispatch action types:
 const SET_DAY              = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW        = "SET_INTERVIEW";
@@ -27,7 +26,12 @@ const UPDATE_SPOTS         = "UPDATE_SPOTS";
 
 
 
-axios.defaults.baseURL = `${BASE_URL}/api`;
+// Set the base URL for API calls:
+axios.defaults.baseURL = `${window.location}/api`;
+
+// Initialize the WebSocket handler:
+//    This does not initiate a connection.
+const socket = SocketHandler(process.env.REACT_APP_WEBSOCKET_URL);
 
 
 
@@ -152,8 +156,6 @@ export default function useApplicationData() {
     }
   }
 
-  const socket = SocketHandler(BASE_URL);
-
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
@@ -185,7 +187,7 @@ export default function useApplicationData() {
         //.on("close", function(event) {
         //  console.log("socket.close", event);
         //})
-        .on("message", function(message, event) {
+        .on("message", function(message, _event) {
           //console.log("socket.message", message, event);
           dispatch(message);
         })
