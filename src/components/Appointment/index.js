@@ -19,15 +19,15 @@ export default function Appointment(props) {
   //console.log("Appointment");
 
   const { mode, transition, back } = useVisualMode(props.interview ? vm.SHOW : vm.EMPTY);
-  console.log("Appointment", mode, props.interview);
+  //console.log("Appointment", mode, props.interview);
 
   useEffect(() => {
-    console.log("Appointment: useEffect", mode, props.interview);
+    //console.log("Appointment: useEffect", mode, props.interview);
     if (props.interview !== null && mode === vm.EMPTY) {
-      console.log("transition: SHOW");
+      //console.log("transition: SHOW");
       transition(vm.SHOW);
     } else if (props.interview === null && mode === vm.SHOW) {
-      console.log("transition: EMPTY");
+      //console.log("transition: EMPTY");
       transition(vm.EMPTY);
     }
   }, [ props.interview, mode, transition ]);
