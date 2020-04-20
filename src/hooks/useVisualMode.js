@@ -5,6 +5,16 @@
 
 import { useState } from "react";
 
+export const EMPTY          = "EMPTY";
+export const SHOW           = "SHOW";
+export const CREATE         = "CREATE";
+export const EDIT           = "EDIT";
+export const SAVING         = "SAVING";
+export const CONFIRM_DELETE = "CONFIRM_DELETE";
+export const DELETING       = "DELETING";
+export const ERROR_SAVE     = "ERROR_SAVE";
+export const ERROR_DELETE   = "ERROR_DELETE";
+
 
 
 export default function useVisualMode(initial) {
