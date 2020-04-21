@@ -59,20 +59,25 @@ const fixtures = {
 
 
 export default {
+
+  defaults: {
+    baseUrl: ""
+  },
+
   get: jest.fn(url => {
-    if (url === "/api/days") {
+    if (url === "/days") {
       return Promise.resolve({
         status:     200,
         statusText: "OK",
         data:       fixtures.days
       });
-    } else if (url === "/api/appointments") {
+    } else if (url === "/appointments") {
       return Promise.resolve({
         status:     200,
         statusText: "OK",
         data:       fixtures.appointments
       });
-    } else if (url === "/api/interviewers") {
+    } else if (url === "/interviewers") {
       return Promise.resolve({
         status:     200,
         statusText: "OK",
@@ -80,6 +85,7 @@ export default {
       });
     }
   })
+
 }
 
 
