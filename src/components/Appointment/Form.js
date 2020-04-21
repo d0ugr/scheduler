@@ -14,8 +14,18 @@ export default function Form(props) {
   //    Components should have checks for nulls.
   const { state, updateState } = useStateObject({
     studentName:   props.name        || "",
-    interviewerId: props.interviewer || null
+    interviewerId: props.interviewer || null,
+    errorMessage:  null
   });
+
+  // Validate the student name input:
+  function validate() {
+    if (state.studentName.trim() !== "") {
+      props.onSave(state.studentName, state.interviewerId)
+    } else {
+      updateState({ errorMessage: "Student name cannot be blank" });
+    }
+  }
 
   // Return the form to render:
   return (
@@ -33,12 +43,13 @@ export default function Form(props) {
             onChange={(event) => updateState(event.target)}
             data-testid="student-name-input"
           />
+          <section className="appointment__validation">{state.errorMessage}</section>
+          <InterviewerList
+            interviewers={props.interviewers}
+            interviewer={state.interviewerId}
+            setInterviewer={(interviewerId) => updateState({ interviewerId })}
+          />
         </form>
-        <InterviewerList
-          interviewers={props.interviewers}
-          interviewer={state.interviewerId}
-          setInterviewer={(interviewerId) => updateState({ interviewerId })}
-        />
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
@@ -46,7 +57,7 @@ export default function Form(props) {
             onClick={props.onCancel}
           >Cancel</Button>
           <Button confirm
-            onClick={() => props.onSave(state.studentName, state.interviewerId)}
+            onClick={validate}
           >Save</Button>
         </section>
       </section>

@@ -26,7 +26,7 @@ describe("Form", () => {
     const { getByPlaceholderText } = render(
       <Form interviewers={interviewers} />
     );
-    expect(getByPlaceholderText("Enter student name")).toHaveValue("");
+    expect(getByPlaceholderText(/Enter Student Name/i)).toHaveValue("");
   });
 
   it("renders with initial student name", () => {
@@ -36,12 +36,10 @@ describe("Form", () => {
     expect(getByTestId("student-name-input")).toHaveValue("Lydia Miller-Jones");
   });
 
-
-
   it("validates that the student name is not blank", () => {
-    const onSave = (studentName, interviewerId) => console.log("onSave called:", studentName, interviewerId);
+    const onSave = jest.fn();
     const { getByText } = render(
-      <Form interviewers={interviewers} name="" onSave={onSave} />
+      <Form interviewers={interviewers} onSave={onSave} />
     );
     fireEvent.click(getByText("Save"));
     expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
@@ -49,10 +47,23 @@ describe("Form", () => {
   });
 
   it("calls onSave function when the name is defined", () => {
-    const onSave = (studentName, interviewerId) => console.log("onSave called:", studentName, interviewerId);
+    const onSave = jest.fn();
     const { getByText, queryByText } = render(
       <Form interviewers={interviewers} name="Lydia Miller-Jones" onSave={onSave} />
     );
+    fireEvent.click(getByText("Save"));
+    expect(queryByText(/student name cannot be blank/i)).toBeNull();
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith("Lydia Miller-Jones", null);
+  });
+
+  it("submits the name entered by the user", () => {
+    const onSave = jest.fn();
+    const { getByPlaceholderText, getByText, queryByText } = render(
+      <Form interviewers={interviewers} onSave={onSave} />
+    );
+    const input = getByPlaceholderText(/Enter Student Name/i);
+    fireEvent.change(input, { target: { value: "Lydia Miller-Jones" } });
     fireEvent.click(getByText("Save"));
     expect(queryByText(/student name cannot be blank/i)).toBeNull();
     expect(onSave).toHaveBeenCalledTimes(1);
