@@ -21,6 +21,7 @@ export default function Form(props) {
   // Validate the student name input:
   function validate() {
     if (state.studentName.trim() !== "") {
+      updateState({ errorMessage: null });
       props.onSave(state.studentName, state.interviewerId)
     } else {
       updateState({ errorMessage: "Student name cannot be blank" });
