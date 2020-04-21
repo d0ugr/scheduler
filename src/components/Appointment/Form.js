@@ -31,6 +31,7 @@ export default function Form(props) {
             autoFocus
             onFocus={(event) => event.target.select()}
             onChange={(event) => updateState(event.target)}
+            data-testid="student-name-input"
           />
         </form>
         <InterviewerList
