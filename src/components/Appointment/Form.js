@@ -28,6 +28,12 @@ export default function Form(props) {
     }
   }
 
+  // Clear the student name input when clicking Cancel:
+  function cancel() {
+    updateState({ studentName: "" });
+    props.onCancel();
+  }
+
   // Return the form to render:
   return (
     <main className="appointment__card appointment__card--create">
@@ -55,7 +61,7 @@ export default function Form(props) {
       <section className="appointment__card-right">
         <section className="appointment__actions">
           <Button danger
-            onClick={props.onCancel}
+            onClick={cancel}
           >Cancel</Button>
           <Button confirm
             onClick={validate}
