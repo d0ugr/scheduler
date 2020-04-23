@@ -29,11 +29,10 @@ describe("Application", () => {
     rtl.fireEvent.click(rtl.getByText(appointment, "Save"));
     expect(rtl.getByText(appointment, "Saving...")).toBeInTheDocument();
     await rtl.waitForElement(() => rtl.getByText(appointment, "Lydia Miller-Jones"));
-    console.log(rtl.prettyDOM(ar.container));
     const day = rtl.getAllByTestId(ar.container, "day").find((day) =>
       rtl.queryByText(day, "Monday")
     );
-    expect(rtl.getByText(day, "/no spots remaining/i")).toBeInTheDocument();
+    expect(rtl.getByText(day, /no spots remaining/i)).toBeInTheDocument();
   });
 
 });
