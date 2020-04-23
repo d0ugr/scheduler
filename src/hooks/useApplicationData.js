@@ -132,7 +132,7 @@ export default function useApplicationData() {
       case UPDATE_SPOTS:
         try {
           const days = [ ...state.days ];
-          const day = days.find((day) => day.id === action.dayId);
+          const day  = days.find((day) => day.id === action.dayId);
           day.spots = day.appointments
             .reduce((spots, appointmentId) =>
               spots + (state.appointments[appointmentId].interview ? 0 : 1),
@@ -236,7 +236,7 @@ export default function useApplicationData() {
   //    from the database via the API server.
 
   function cancelInterview(id) {
-    console.log("cancelInterview: id:", id);
+    //console.log("cancelInterview: id:", id);
     return axios.delete(`/appointments/${id}`)
       .then((_res) => {
         //console.log(`DELETE /api/appointments/${id}`, res);
