@@ -64,7 +64,7 @@ export default {
     baseUrl: ""
   },
 
-  get: jest.fn(url => {
+  "get": jest.fn(url => {
     if (url === "/days") {
       return Promise.resolve({
         status:     200,
@@ -86,7 +86,17 @@ export default {
     }
   }),
 
-  put: jest.fn(url => {
+  "put": jest.fn(url => {
+    console.log(url);
+    if (url.substring(0, 14) === "/appointments/") {
+      return Promise.resolve({
+        status:     204,
+        statusText: "No Content"
+      });
+    }
+  }),
+
+  "delete": jest.fn(url => {
     console.log(url);
     if (url.substring(0, 14) === "/appointments/") {
       return Promise.resolve({
