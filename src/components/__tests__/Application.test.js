@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  render, cleanup, prettyDOM,
+  render, cleanup, // prettyDOM,
   fireEvent, waitForElement, getAllByTestId,
   getByText, getByAltText, getByPlaceholderText,
   queryByText, queryByAltText
@@ -48,10 +48,13 @@ describe("Application", () => {
     fireEvent.click(queryByAltText(appointment, "Delete"));
     expect(getByText(ar.container, /are you super duper sure/i)).toBeInTheDocument();
     fireEvent.click(getByText(appointment, "Confirm"));
-    // 6. Check that the element with the text Deleting... is displayed.
-    // 7. Wait until the empty appointment with the Add button is displayed.
-    // 8. Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
-    ar.debug();
+    expect(getByText(appointment, "Deleting...")).toBeInTheDocument();
+    await waitForElement(() => queryByAltText(appointment, "Add"));
+    fireEvent.click(getByAltText(appointment, "Add"));
+    const day = getAllByTestId(ar.container, "day").find((day) =>
+      queryByText(day, "Monday")
+    );
+    expect(getByText(day, /2 spots remaining/i)).toBeInTheDocument();
   });
 
 });
