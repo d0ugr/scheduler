@@ -3,7 +3,7 @@ import {
   render, cleanup, prettyDOM,
   fireEvent, waitForElement, getAllByTestId,
   getByText, getByAltText, getByPlaceholderText,
-  queryByText
+  queryByText, queryByAltText
 } from "@testing-library/react";
 
 import Application from "components/Application";
@@ -40,16 +40,18 @@ describe("Application", () => {
   });
 
   it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
-
     const ar = render(<Application />);
     await waitForElement(() => getByText(ar.container, "Archie Cohen"));
-    // 3. Click the Delete button on the appointment.
-    // 4. Check that the confirmation prompt is shown.
-    // 5. Click the Confirm button.
+    const appointment = getAllByTestId(ar.container, "appointment").find(
+      appointment => queryByText(appointment, "Archie Cohen")
+    );
+    fireEvent.click(queryByAltText(appointment, "Delete"));
+    expect(getByText(ar.container, /are you super duper sure/i)).toBeInTheDocument();
+    fireEvent.click(getByText(appointment, "Confirm"));
     // 6. Check that the element with the text Deleting... is displayed.
     // 7. Wait until the empty appointment with the Add button is displayed.
     // 8. Check that the DayListItem with the text "Monday" also has the text "2 spots remaining".
-
+    ar.debug();
   });
 
 });
