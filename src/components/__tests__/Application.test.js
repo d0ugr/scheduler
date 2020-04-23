@@ -57,6 +57,19 @@ describe("Application", () => {
     expect(getByText(day, /2 spots remaining/i)).toBeInTheDocument();
   });
 
+  it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {
+    const ar = render(<Application />);
+    await waitForElement(() => getByText(ar.container, "Archie Cohen"));
+    // 3. Click the Edit button on the appointment.
+    // 4. Check that edit Form is shown.
+    // 5. Change the student name.
+    // 6. Click the Save button.
+    // 7. Check that the element with the text Saving... is displayed.
+    // 8. Wait until the updated appointment is displayed.
+    // 9. Check that the DayListItem with the text "Monday" also has the text "1 spots remaining".
+    ar.debug();
+  });
+
 });
 
 
