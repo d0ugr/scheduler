@@ -131,22 +131,18 @@ export default function useApplicationData() {
 
       case UPDATE_SPOTS:
         try {
-          const days = { ...state.days };
-          try {
-            const day = days.find((day) => day.id === action.dayId);
-            day.spots = day.appointments
-              .reduce((spots, appointmentId) =>
-                spots + (!state.appointments[appointmentId].interview ? 0 : 1),
-                0
-              );
-            return updateState(state, { days });
-          // If the data is invalid, returning the existing state will
-          //    cause React to do nothing:
-          } catch (err) {
-            return state;
-          }
+          const days = [ ...state.days ];
+          const day = days.find((day) => day.id === action.dayId);
+          day.spots = day.appointments
+            .reduce((spots, appointmentId) =>
+              spots + (state.appointments[appointmentId].interview ? 0 : 1),
+              0
+            );
+          return updateState(state, { days });
+        // If the data is invalid, returning the existing state will
+        //    cause React to do nothing:
         } catch (err) {
-          return state;
+          throw new Error(err);
         }
 
       default:
@@ -190,6 +186,7 @@ export default function useApplicationData() {
         .on("message", function(message, _event) {
           //console.log("socket.message", message, event);
           dispatch(message);
+          dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
         })
         .on("error", function(event) {
           console.log("socket.error", event);
