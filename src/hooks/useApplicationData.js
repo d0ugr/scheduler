@@ -1,12 +1,17 @@
 // useApplicationData.js
 //
-// Custom hook that manages application state
+// Custom hook that manages application state via useApplicationReducer
 //    and performs network API requests.
 
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 
-// import * as select    from "../helpers/selectors";
+import reducer, {
+  SET_DAY,
+  SET_APPLICATION_DATA,
+  SET_INTERVIEW,
+  UPDATE_SPOTS
+} from "../reducers/application";
 import SocketHandler from "../helpers/socket_handler";
 
 
@@ -18,12 +23,6 @@ const DEFAULT_STATE = {
   appointments: null
 };
 
-// useReducer dispatch action types:
-const SET_DAY              = "SET_DAY";
-const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-const SET_INTERVIEW        = "SET_INTERVIEW";
-const UPDATE_SPOTS         = "UPDATE_SPOTS";
-
 
 
 // Set the base URL for API calls:
@@ -32,33 +31,6 @@ axios.defaults.baseURL = `${window.location}/api`;
 // Initialize the WebSocket handler:
 //    This does not initiate a connection.
 const socket = SocketHandler(process.env.REACT_APP_WEBSOCKET_URL);
-
-
-
-// updateState adds/updates properties in the given state object.
-//
-//    state   Object   State object to modify.
-//    data    Object   Properties to update state with.
-//
-//    If data is not an object, nothing happens.
-//    If it contains "name" and "value" properties,
-//    (i.e. from <input> attributes) those are used to set the value as a
-//    "name: value" property in the state object.
-//    Otherwise, the object is simply copied into the state object.
-//    Existing properties will be updated if they exist.
-//
-// Returns a copy of the state object with any updates.
-
-const updateState = (state, data) => {
-  try {
-    return {
-      ...state,
-      ...(data.name && data.value ? { [data.name]: data.value } : data)
-    };
-  } catch (err) {
-    return state;
-  }
-};
 
 
 
@@ -76,82 +48,6 @@ export default function useApplicationData() {
   // const { state, updateState } = useStateObject(DEFAULT_STATE);
   const [ state, dispatch ] = useReducer(reducer, DEFAULT_STATE);
 
-  // reducer is called by dispatch with the current state and action data in an object.
-  //
-  // Returns an object to update the state with.
-  //    Returning the current state object causes React to do nothing
-  //    (i.e. if an error occurs).
-
-  function reducer(state, action) {
-    //console.log("useApplicationData: reducer:", action.type);
-    switch (action.type) {
-
-      // Set general application data.
-      //
-      //    days           Array    Array of day information
-      //                              (array of appointment IDs, array of interviewer IDs,
-      //                              and number of available interview spots).
-      //    appointments   Object   All interview appointment objects.
-      //    interviewers   Object   All interviewer objects.
-
-      case SET_APPLICATION_DATA:
-        return updateState(state, {
-          days:         [ ...(action.days         || state.days        ) ],
-          appointments: { ...(action.appointments || state.appointments) },
-          interviewers: { ...(action.interviewers || state.interviewers) }
-        });
-
-      // Set the currently selected day in the sidebar.
-      //
-      //    dayId   Number   Day ID to set.
-
-      case SET_DAY:
-        return updateState(state, {
-          selectedDay: (action.dayId || state.selectedDay)
-        });
-
-      // Update an interview appointment data.
-      //
-      //    interview   Object   Interview data object, or null to clear it.
-
-      case SET_INTERVIEW:
-        return updateState(state, {
-          appointments: {
-            ...state.appointments,
-            [action.id]: {
-              ...state.appointments[action.id],
-              interview: (action.interview ? { ...action.interview } : null)
-            }
-          }
-        });
-
-      // Update the number of interview appointment spots for a given day.
-      //
-      //    dayId   Number   Day ID to update the number of spots for.
-
-      case UPDATE_SPOTS:
-        try {
-          const days = [ ...state.days ];
-          const day  = days.find((day) => day.id === action.dayId);
-          day.spots = day.appointments
-            .reduce((spots, appointmentId) =>
-              spots + (state.appointments[appointmentId].interview ? 0 : 1),
-              0
-            );
-          return updateState(state, { days });
-        // If the data is invalid, returning the existing state will
-        //    cause React to do nothing:
-        } catch (err) {
-          throw new Error(err);
-        }
-
-      default:
-        throw new Error(
-          `useApplicationData: reducer: Unsupported action type: ${action.type}`
-        );
-    }
-  }
-
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
@@ -163,11 +59,6 @@ export default function useApplicationData() {
     ])
     .then((req) => {
       // Update the application state:
-      //updateState({
-      //  days:         res[0].data,
-      //  appointments: res[1].data,
-      //  interviewers: res[2].data
-      //})
       dispatch({
         type:         SET_APPLICATION_DATA,
         days:         req[0].data,
@@ -203,7 +94,6 @@ export default function useApplicationData() {
   //    This will trigger an effect in Application that re-renders the schedule.
 
   function setDay(dayId) {
-    // updateState({ selectedDay: dayId });
     dispatch({ type: SET_DAY, dayId });
   }
 
@@ -212,21 +102,13 @@ export default function useApplicationData() {
 
   function bookInterview(id, interview) {
     //console.log("bookInterview: id, interview:", id, interview);
-    const newAppointment = {
+    return axios.put(`/appointments/${id}`, {
       ...state.appointments[id],
       interview: { ...interview }
-    };
-    return axios.put(`/appointments/${id}`, newAppointment)
+    })
       .then((_res) => {
         //console.log(`PUT /api/appointments/${id}`, res);
-        const days = [ ...state.days ];
-        const appointments = {
-          ...state.appointments,
-          [id]: newAppointment
-        };
-        // select.updateSpotsForDay(appointments, state.days, state.selectedDay);
-        // updateState({ days, appointments });
-        dispatch({ type: SET_APPLICATION_DATA, days, appointments });
+        dispatch({ type: SET_INTERVIEW, interview });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
@@ -240,12 +122,7 @@ export default function useApplicationData() {
     return axios.delete(`/appointments/${id}`)
       .then((_res) => {
         //console.log(`DELETE /api/appointments/${id}`, res);
-        const days         = [ ...state.days         ];
-        const appointments = { ...state.appointments };
-        appointments[id].interview = null;
-        // select.updateSpotsForDay(appointments, days, state.selectedDay);
-        // updateState({ days, appointments });
-        dispatch({ type: SET_APPLICATION_DATA, days, appointments });
+        dispatch({ type: SET_INTERVIEW, interview: null });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
