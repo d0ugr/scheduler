@@ -64,6 +64,17 @@ describe("Application", () => {
     //ar.debug();
   });
 
+  // it("loads data, prevents form submit", async () => {
+  //   const ar = render(<Application />);
+  //   await waitForElement(() => getByText(ar.container, "Archie Cohen"));
+  //   const appointment = getAllByTestId(ar.container, "appointment")[0];
+  //   fireEvent.click(getByAltText(appointment, "Add"));
+  //   fireEvent.submit();
+  //   expect(queryByText(appointment, "Saving...")).not.toBeInTheDocument();
+  //   //console.log(prettyDOM(appointment));
+  //   //ar.debug();
+  // });
+
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
     const ar = render(<Application />);
     await waitForElement(() => getByText(ar.container, "Archie Cohen"));
@@ -92,7 +103,7 @@ describe("Application", () => {
     fireEvent.change(getByPlaceholderText(appointment, /enter student name/i), {
       target: { value: "Lydia Miller-Jones" }
     });
-    // fireEvent.click(getByAltText(appointment, "Mildred Nazir"));
+    fireEvent.click(getByAltText(appointment, "Tori Malcolm"));
     fireEvent.click(getByText(appointment, "Save"));
     expect(getByText(appointment, "Saving...")).toBeInTheDocument();
     await waitForElement(() => getByText(appointment, "Lydia Miller-Jones"));
