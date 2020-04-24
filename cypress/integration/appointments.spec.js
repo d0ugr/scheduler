@@ -4,7 +4,7 @@
 describe("Appointments", () => {
 
   beforeEach(() => {
-    cy.request("GET", "localhost:8001/api/debug/reset");
+    cy.request("GET", "http://localhost:8001/api/debug/reset");
     cy.visit("/");
     cy.contains("Monday");
   });
@@ -25,7 +25,7 @@ describe("Appointments", () => {
       .first()
       .click({ force: true });
     cy.get("[data-testid=student-name-input]")
-      .clear()
+      //.clear()  // I added focus + select all so this isn't necessary
       .type("Lydia Miller-Jones");
     cy.get("[alt='Tori Malcolm']").click();
     cy.contains("Save").click();
