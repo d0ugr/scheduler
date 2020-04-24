@@ -108,7 +108,7 @@ export default function useApplicationData() {
     })
       .then((_res) => {
         //console.log(`PUT /api/appointments/${id}`, res);
-        dispatch({ type: SET_INTERVIEW, interview });
+        dispatch({ type: SET_INTERVIEW, id, interview });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
@@ -122,7 +122,7 @@ export default function useApplicationData() {
     return axios.delete(`/appointments/${id}`)
       .then((_res) => {
         //console.log(`DELETE /api/appointments/${id}`, res);
-        dispatch({ type: SET_INTERVIEW, interview: null });
+        dispatch({ type: SET_INTERVIEW, id, interview: null });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
