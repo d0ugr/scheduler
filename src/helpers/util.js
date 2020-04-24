@@ -39,6 +39,9 @@ export const httpToWs = function(url) {
 
 export const updateState = (state, data) => {
   try {
+    if (typeof data !== "object") {
+      throw new Error();
+    }
     return {
       ...state,
       ...(data.name && data.value ? { [data.name]: data.value } : data)
