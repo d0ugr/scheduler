@@ -26,7 +26,7 @@ const DEFAULT_STATE = {
 
 
 // Set the base URL for API calls:
-axios.defaults.baseURL = `${window.location}/api`;
+axios.defaults.baseURL = `${new URL(window.location).origin}/api`;
 
 // Initialize the WebSocket handler:
 //    This does not initiate a connection.
