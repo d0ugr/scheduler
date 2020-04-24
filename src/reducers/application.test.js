@@ -8,7 +8,7 @@ import reducer from "./application";
 
 describe("Application Reducer", () => {
 
-  it("thows an error with an unsupported type", () => {
+  it("throws an error with an unsupported type", () => {
     expect(() => reducer({}, { type: null })).toThrowError(
       /unsupported action type/i
     );
