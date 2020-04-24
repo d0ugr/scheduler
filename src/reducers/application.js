@@ -77,8 +77,6 @@ export default function reducer(state, action) {
             0
           );
         return util.updateState(state, { days });
-      // If the data is invalid, returning the existing state will
-      //    cause React to do nothing:
       } catch (err) {
         throw new Error(err);
       }

@@ -80,7 +80,7 @@ export default function useApplicationData() {
           dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
         })
         .on("error", function(event) {
-          console.log("socket.error", event);
+          console.warn("socket.error", event);
         })
         .open();
     })
