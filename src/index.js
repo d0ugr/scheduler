@@ -7,8 +7,9 @@ import "index.scss";
 import Application from "components/Application";
 
 // Set the base URL for API calls:
-axios.defaults.baseURL = `${(
+axios.defaults.baseURL = `${new URL(
   process.env.REACT_APP_API_BASE_URL ||
-  new URL(window.location).origin)}/api`;
+  window.location
+).origin}/api`;
 
 ReactDOM.render(<Application />, document.getElementById("root"));
