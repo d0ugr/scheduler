@@ -1,3 +1,8 @@
+// index.js
+//
+// Storybook component stories for isolated component
+//    development and testing.
+
 import React, { Fragment } from "react";
 
 import { storiesOf } from "@storybook/react";
@@ -19,7 +24,7 @@ import Status              from "components/Appointment/Status";
 import Error               from "components/Appointment/Error";
 import Form                from "components/Appointment/Form";
 
-
+// Button stories
 
 storiesOf("Button", module)
   .addParameters({
@@ -38,7 +43,7 @@ storiesOf("Button", module)
   ))
 ;
 
-
+// DayListItem stories
 
 storiesOf("DayListItem", module)
   .addParameters({
@@ -53,7 +58,7 @@ storiesOf("DayListItem", module)
   ))
 ;
 
-
+// DayList stories
 
 const days = [
   {
@@ -88,7 +93,7 @@ storiesOf("DayList", module)
   ))
 ;
 
-
+// InterviewerListItem stories
 
 const interviewer = {
   id:     1,
@@ -128,7 +133,7 @@ storiesOf("InterviewerListItem", module)
   ))
 ;
 
-
+// InterviewerList stories
 
 const interviewers = [
   { id: 1, name: "Sylvia Palmer", avatar: "https://i.imgur.com/LpaY82x.png" },
@@ -160,7 +165,7 @@ storiesOf("InterviewerList", module)
   ))
 ;
 
-
+// Appointment stories
 
 storiesOf("Appointment", module)
   .addParameters({
@@ -249,6 +254,3 @@ storiesOf("Appointment", module)
     </Fragment>
   ))
 ;
-
-
-
