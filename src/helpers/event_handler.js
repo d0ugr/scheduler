@@ -35,7 +35,6 @@ export default function EventHandler() {
 
   function trigger(event) { // ...arguments
 
-    //console.log("EventHandler.trigger", event);
     if (event && (typeof event === "string") && listeners[event]) {
       listeners[event](...([...arguments].slice(1)));
     }

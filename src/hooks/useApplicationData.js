@@ -31,8 +31,6 @@ const socket = SocketHandler(process.env.REACT_APP_WEBSOCKET_URL);
 
 export default function useApplicationData() {
 
-  //console.log("useApplicationData");
-
   // The state of things:
   //    Initial default values are set here.
   //    Components should have checks for nulls.
@@ -42,7 +40,6 @@ export default function useApplicationData() {
   // Load data from the API server on initial page load
   //    and save it in the state object:
   useEffect(() => {
-    //console.log("useApplicationData: useEffect[]: Page load");
     Promise.all([
       axios.get("/days"),
       axios.get("/appointments"),
@@ -58,15 +55,7 @@ export default function useApplicationData() {
       })
       // Set up the WebSocket connection:
       socket
-        //.on("open", function(event) {
-        //  console.log("socket.open", event);
-        //  socket.ping();
-        //})
-        //.on("close", function(event) {
-        //  console.log("socket.close", event);
-        //})
         .on("message", function(message, _event) {
-          //console.log("socket.message", message, event);
           dispatch(message);
           dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
         })
@@ -75,7 +64,7 @@ export default function useApplicationData() {
         })
         .open();
     })
-    .catch((err) => console.log("useApplicationData: useEffect[]: Promise.all error:", err));
+    .catch((err) => console.warn("useApplicationData: useEffect[]: Promise.all error:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,31 +79,25 @@ export default function useApplicationData() {
   //    in the database via the API server.
 
   function bookInterview(id, interview) {
-    //console.log("bookInterview: id, interview:", id, interview);
     return axios.put(`/appointments/${id}`, {
       ...state.appointments[id],
       interview: { ...interview }
     })
       .then((_res) => {
-        //console.log(`PUT /api/appointments/${id}`, res);
         dispatch({ type: SET_INTERVIEW, id, interview });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
-      //.catch((err) => console.log(`PUT /api/appointments/${id}`, err));
   }
 
   // cancelInterview removes an interview appointment
   //    from the database via the API server.
 
   function cancelInterview(id) {
-    //console.log("cancelInterview: id:", id);
     return axios.delete(`/appointments/${id}`)
       .then((_res) => {
-        //console.log(`DELETE /api/appointments/${id}`, res);
         dispatch({ type: SET_INTERVIEW, id, interview: null });
         dispatch({ type: UPDATE_SPOTS, dayId: state.selectedDay });
       })
-      //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
   }
 
   return [ state, setDay, bookInterview, cancelInterview ];

@@ -17,7 +17,6 @@ export const UPDATE_SPOTS         = "UPDATE_SPOTS";
 //    (i.e. if an error occurs).
 
 export default function reducer(state, action) {
-  //console.log("useApplicationData: reducer:", action.type);
   switch (action.type) {
 
     // Set general application data.

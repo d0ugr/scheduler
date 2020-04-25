@@ -36,8 +36,6 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
     expect(getByText(day, /1 spot remaining/i)).toBeInTheDocument();
-    //console.log(prettyDOM(appointment));
-    //ar.debug();
   });
 
   it("shows the delete error when failing to delete an existing appointment", async () => {
@@ -56,8 +54,6 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
     expect(getByText(day, /1 spot remaining/i)).toBeInTheDocument();
-    //console.log(prettyDOM(appointment));
-    //ar.debug();
   });
 
   it("defaults to Monday and changes the schedule when a new day is selected", async () => {
@@ -65,19 +61,7 @@ describe("Application", () => {
     await waitForElement(() => ar.getByText("Monday"));
     fireEvent.click(ar.getByText("Tuesday"));
     expect(ar.getByText("Leopold Silvers")).toBeInTheDocument();
-    //ar.debug();
   });
-
-  // it("loads data, prevents form submit", async () => {
-  //   const ar = render(<Application />);
-  //   await waitForElement(() => getByText(ar.container, "Archie Cohen"));
-  //   const appointment = getAllByTestId(ar.container, "appointment")[0];
-  //   fireEvent.click(getByAltText(appointment, "Add"));
-  //   fireEvent.submit();
-  //   expect(queryByText(appointment, "Saving...")).not.toBeInTheDocument();
-  //   //console.log(prettyDOM(appointment));
-  //   //ar.debug();
-  // });
 
   it("loads data, books an interview and reduces the spots remaining for the first day by 1", async () => {
     const ar = render(<Application />);
@@ -95,8 +79,6 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
     expect(getByText(day, /no spots remaining/i)).toBeInTheDocument();
-    //console.log(prettyDOM(appointment));
-    //ar.debug();
   });
 
   it("loads data, edits an interview and keeps the spots remaining for Monday the same", async () => {
@@ -115,8 +97,6 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
     expect(getByText(day, /1 spot remaining/i)).toBeInTheDocument();
-    //console.log(prettyDOM(appointment));
-    //ar.debug();
   });
 
   it("loads data, cancels an interview and increases the spots remaining for Monday by 1", async () => {
@@ -134,8 +114,6 @@ describe("Application", () => {
       queryByText(day, "Monday")
     );
     expect(getByText(day, /2 spots remaining/i)).toBeInTheDocument();
-    //console.log(prettyDOM(appointment));
-    //ar.debug();
   });
 
 });

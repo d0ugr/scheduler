@@ -85,7 +85,6 @@ export default function SocketHandler(url) {
 
     if (typeof code   !== "number") code   = WS_CC_GOING_AWAY;
     if (typeof reason !== "string") reason = "";
-    console.log("SocketHandler.close", `${code}, "${reason}"`);
     try {
       ws.close(code, reason);
     } catch (err) {
@@ -101,11 +100,9 @@ export default function SocketHandler(url) {
 
   function emit(message) { // ...arguments
 
-    //console.log("SocketHandler.emit", `readyState ${ws.readyState}`);
     if (!message)                         { console.warn("SocketHandler.emit", "Invalid message"); return; }
     if (!ws)                              { console.warn("SocketHandler.emit", "No ws object"   ); return; }
     if (ws.readyState !== WebSocket.OPEN) { console.warn("SocketHandler.emit", "Not connected"  ); return; }
-    console.log("SocketHandler.emit", JSON.stringify(message));
 
     try {
       ws.send(JSON.stringify(message));
@@ -120,7 +117,6 @@ export default function SocketHandler(url) {
   function ping() {
 
     if (!ws) { console.warn("SocketHandler.ping", "Not connected"); return; }
-    //console.log("SocketHandler.ping", `PING`);
     try {
       ws.send("PING");
     } catch (err) {
