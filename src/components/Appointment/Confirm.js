@@ -1,8 +1,17 @@
+// Confirm.js
+//
+// React component that prompts for confirmation.
+// Currently only used for deletion.
+
 import React from "react";
 
 import Button from "../Button";
 
-
+// Confirm component definition.
+//
+//    props.message     String:   Message to display describing the action being taken.
+//    props.onConfirm   Function: Confirm button callback.
+//    props.onCancel    Function: Cancel button callback.
 
 export default function Confirm(props) {
 

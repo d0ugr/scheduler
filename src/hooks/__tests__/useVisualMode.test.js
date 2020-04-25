@@ -1,14 +1,18 @@
+// useVisualMode.test.js
+//
+// Unit tests for useVisualMode.js.
+
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import useVisualMode from "hooks/useVisualMode";
 
-
+// Mock mode transitions:
 
 const FIRST  = "FIRST";
 const SECOND = "SECOND";
 const THIRD  = "THIRD";
 
-
+// useVisualMode tests:
 
 test("useVisualMode should initialize with default value", () => {
   const { result } = renderHook(() => useVisualMode(FIRST));

@@ -14,8 +14,6 @@ import reducer, {
 } from "../reducers/application";
 import SocketHandler from "../helpers/socket_handler";
 
-
-
 // Default values for the application state:
 const DEFAULT_STATE = {
   selectedDay:  1, // null
@@ -23,13 +21,9 @@ const DEFAULT_STATE = {
   appointments: null
 };
 
-
-
 // Initialize the WebSocket handler:
 //    This does not initiate a connection.
 const socket = SocketHandler(process.env.REACT_APP_WEBSOCKET_URL);
-
-
 
 // useApplicationData manages application state separately from
 //    the Application component (which handles rendering).
@@ -85,8 +79,6 @@ export default function useApplicationData() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-
   // setDay sets the currently selected day chosen in the sidebar.
   //    This will trigger an effect in Application that re-renders the schedule.
 
@@ -125,11 +117,6 @@ export default function useApplicationData() {
       //.catch((err) => console.log(`DELETE /api/appointments/${id}`, err));
   }
 
-
-
   return [ state, setDay, bookInterview, cancelInterview ];
 
 }
-
-
-

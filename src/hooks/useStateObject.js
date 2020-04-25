@@ -4,8 +4,6 @@
 
 import { useState, useCallback } from "react";
 
-
-
 // useStateObject is an enhanced useState wrapper hook.
 //    All state values are stored in the state object.
 //    state and setState are exposed for external use,
@@ -44,6 +42,3 @@ export default function useStateObject(defaultState) {
   return { state, setState, updateState, resetState };
 
 };
-
-
-

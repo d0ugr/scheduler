@@ -1,6 +1,6 @@
 import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
 
-
+// Test data:
 
 const state = {
   days: [
@@ -47,7 +47,7 @@ const state = {
 
 };
 
-
+// Selector tests:
 
 test("getAppointmentsForDay returns an array", () => {
   const result = getAppointmentsForDay(state, 1);
@@ -123,6 +123,3 @@ test("getInterview returns null if no interview is booked", () => {
   const result = getInterview(state, state.appointments["2"].interview);
   expect(result).toBeNull();
 });
-
-
-

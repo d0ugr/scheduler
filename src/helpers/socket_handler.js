@@ -5,8 +5,6 @@
 import EventHandler from "./event_handler";
 import * as util    from "./util";
 
-
-
 // WebSocket close codes:
 
 //const WS_CC_DESCRIPTION = {};
@@ -39,12 +37,8 @@ export const WS_CC_TLS_ERROR            = 1015;
 //export WS_CC_DESCRIPTION[WS_CC_INTERNAL_ERROR       = "Internal error";
 //export WS_CC_DESCRIPTION[WS_CC_TLS_ERROR            = "TLS error";
 
-
-
 // Initialize the event handler for socket events:
 const eh = EventHandler();
-
-
 
 // SocketHandler is a relatively simple wrapper for a WebSocket connection.
 
@@ -140,6 +134,3 @@ export default function SocketHandler(url) {
   return { on: eh.on, open, close, connected, emit, ping };
 
 }
-
-
-

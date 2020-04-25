@@ -1,6 +1,13 @@
+// Status.js
+//
+// React component that shows a spinner and the current status
+//    of an operation, such as saving or deleting.
+
 import React from "react";
 
-
+// Show component definition.
+//
+//    props.message   String: Status message to display.
 
 export default function Status(props) {
 

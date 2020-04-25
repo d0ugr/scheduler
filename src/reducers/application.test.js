@@ -4,7 +4,7 @@
 
 import reducer from "./application";
 
-
+// Application reducer tests:
 
 describe("Application Reducer", () => {
 
@@ -15,6 +15,3 @@ describe("Application Reducer", () => {
   });
 
 });
-
-
-

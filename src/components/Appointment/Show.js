@@ -1,6 +1,16 @@
+// Show.js
+//
+// React component that shows a booked interview appointment
+//    in the schedule.
+
 import React from "react";
 
-
+// Show component definition.
+//
+//    props.student           String:   Student name.
+//    props.interviewerName   String:   Interviewer name.
+//    props.onEdit            Function: Edit button callback.
+//    props.onDelete          Function: Delete button callback.
 
 export default function Show(props) {
 

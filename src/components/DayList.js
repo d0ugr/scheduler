@@ -1,12 +1,17 @@
+// DayList.js
+//
+// React component that shows the list of days
+//    and spots remaining in the sidebar.
+
 import React from "react";
 
 import DayListItem from "./DayListItem";
 
-
+// DayList component definition.
+//
+//    props.days   Array:   List of day items.
 
 export default function DayList(props) {
-
-  //console.log("DayList");
 
   const dayListItems = (props.days || []).map((dayData, _index) =>
     <DayListItem

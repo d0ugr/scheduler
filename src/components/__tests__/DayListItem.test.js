@@ -1,3 +1,7 @@
+// DayListItem.test.js
+//
+// Jest tests for the DayListItem component.
+
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 
@@ -5,7 +9,7 @@ import DayListItem from "components/DayListItem";
 
 afterEach(cleanup);
 
-
+// DayListItem tests:
 
 it("renders 'no spots remaining' when there are 0 spots", () => {
   const { getByText } = render(<DayListItem name="Monday" spots={0} />);

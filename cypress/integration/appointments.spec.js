@@ -1,5 +1,6 @@
-
-
+// appointments.spec.js
+//
+// Cypress tests for creating, editing and deleting interview appointments.
 
 describe("Appointments", () => {
 
@@ -39,6 +40,3 @@ describe("Appointments", () => {
   });
 
 });
-
-
-

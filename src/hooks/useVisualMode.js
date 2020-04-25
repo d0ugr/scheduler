@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 
+// Mode constants:
 export const EMPTY          = "EMPTY";
 export const SHOW           = "SHOW";
 export const CREATE         = "CREATE";
@@ -15,7 +16,7 @@ export const DELETING       = "DELETING";
 export const ERROR_SAVE     = "ERROR_SAVE";
 export const ERROR_DELETE   = "ERROR_DELETE";
 
-
+// Hook definiton:
 
 export default function useVisualMode(initial) {
 
@@ -44,6 +45,3 @@ export default function useVisualMode(initial) {
   return { mode, transition, back };
 
 }
-
-
-

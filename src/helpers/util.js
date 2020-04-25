@@ -2,8 +2,6 @@
 //
 // General utility helper functions.
 
-
-
 // httpToWs converts any http/https URLs to ws/wss.
 //
 //    url   String   URL to convert.
@@ -20,8 +18,6 @@ export const httpToWs = function(url) {
     return null;
   }
 }
-
-
 
 // updateState adds/updates properties in the given state object.
 //
@@ -50,6 +46,3 @@ export const updateState = (state, data) => {
     return state;
   }
 };
-
-
-

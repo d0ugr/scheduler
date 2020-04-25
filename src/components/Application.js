@@ -12,12 +12,13 @@ import useApplicationData from "../hooks/useApplicationData";
 
 import "components/Application.scss";
 
-
+// Application component definition.
+//
+//    No props.
 
 export default function Application(_props) {
 
-  //console.log("Application");
-
+  // Initialize the application state and get callbacks for different operations:
   const [ state, setDay, bookInterview, cancelInterview ] = useApplicationData();
 
   // Return application stuff to render:

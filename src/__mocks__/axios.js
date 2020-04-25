@@ -1,5 +1,8 @@
+// axios.js
+//
+// Axios mock that simulates API server endpoints.
 
-
+// Fake data:
 
 const fixtures = {
   days: [
@@ -56,7 +59,7 @@ const fixtures = {
   }
 };
 
-
+// Export functionality that mimics parts of Axios used in the app:
 
 export default {
 
@@ -105,6 +108,3 @@ export default {
   })
 
 }
-
-
-

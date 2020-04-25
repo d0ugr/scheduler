@@ -4,7 +4,7 @@
 
 import SocketHandler from "./socket_handler";
 
-
+// TODO: Finish tests.
 
 describe("Socket handler", () => {
 
@@ -14,6 +14,3 @@ describe("Socket handler", () => {
   });
 
 });
-
-
-

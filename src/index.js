@@ -1,3 +1,7 @@
+// index.js
+//
+// Main entry point for the app.
+
 import React    from "react";
 import ReactDOM from "react-dom";
 import axios    from "axios";

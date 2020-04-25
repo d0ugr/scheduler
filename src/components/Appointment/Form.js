@@ -1,3 +1,7 @@
+// Form.js
+//
+// React component shown for editing an interview appointment.
+
 import React from "react";
 
 import InterviewerList from "../InterviewerList";
@@ -5,7 +9,13 @@ import Button          from "../Button";
 
 import useStateObject from "../../hooks/useStateObject";
 
-
+// Error component definition.
+//
+//    props.name           String:   Name of the student being interviewed.
+//    props.interviewer    String:   Database ID of the interviewer.
+//    props.interviewers   Array:    List of interviewers available for the timeslot.
+//    props.onSave         Function: Save button callback.
+//    props.onCancel       Function: Cancel button callback.
 
 export default function Form(props) {
 

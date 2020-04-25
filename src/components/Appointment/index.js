@@ -1,3 +1,9 @@
+// index.js (Appointment)
+//
+// React component that shows an interview appointment.
+//    This component has various modes that determine what is displayed,
+//    and transitions between them (handled by the useVisualMode hook).
+
 import React, { useEffect } from "react";
 
 import "./styles.scss";
@@ -12,26 +18,33 @@ import Error   from "./Error";
 
 import useVisualMode, * as vm from "../../hooks/useVisualMode";
 
-
+// Appointment component definition.
+//
+//    props.time              String:   Appointment time to show in the Header.
+//    props.interview         Object:   Appointment information.
+//    props.interviewers      Array:    List of interviewers available for the timeslot.
+//    props.bookInterview     Function: Callback that adds or updates an appointment in the database.
+//    props.cancelInterview   Function: Callback that deletes an appointment from the database.
 
 export default function Appointment(props) {
 
-  //console.log("Appointment");
-
+  // Set up the mode state and transition handling hook.
+  // Possible mode transitions:
+  //    EMPTY -> CREATE -> SAVING -> SHOW | ERROR_SAVE -> EMPTY
+  //    SHOW  -> EDIT   -> SAVING -> SHOW | ERROR_SAVE -> SHOW
+  //    SHOW  -> CONFIRM_DELETE -> DELETING -> EMPTY | ERROR_DELETE -> SHOW
   const { mode, transition, back } = useVisualMode(props.interview ? vm.SHOW : vm.EMPTY);
-  //console.log("Appointment", mode, props.interview);
 
+  // React effect that avoids stale mode state:
   useEffect(() => {
-    //console.log("Appointment: useEffect", mode, props.interview);
     if (props.interview !== null && mode === vm.EMPTY) {
-      //console.log("transition: SHOW");
       transition(vm.SHOW);
     } else if (props.interview === null && mode === vm.SHOW) {
-      //console.log("transition: EMPTY");
       transition(vm.EMPTY);
     }
   }, [ props.interview, mode, transition ]);
 
+  // Called to handle saving an appointment:
   function save(name, interviewer) {
     transition(vm.SAVING);
     props.bookInterview({
@@ -39,21 +52,21 @@ export default function Appointment(props) {
       interviewer
     }).then(() => transition(vm.SHOW, true))
       .catch((_err) => {
-        //console.log("saveInterview:", err)
         transition(vm.ERROR_SAVE, true);
       });
   }
 
+  // Called to handle deleting an appointment:
   function destroy() {
     transition(vm.DELETING, true);
     props.cancelInterview()
       .then(() => transition(vm.EMPTY, true))
       .catch((_err) => {
-        //console.log("deleteInterview:", err)
         transition(vm.ERROR_DELETE, true);
       });
   }
 
+  // Render the appropriate appointment view:
   return (
     <article data-testid="appointment">
       <Header time={props.time} />

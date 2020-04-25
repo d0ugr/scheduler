@@ -1,5 +1,6 @@
-
-
+// navigation.spec.js
+//
+// Cypress tests for basic site navigation.
 
 describe("Navigation", () => {
 
@@ -15,6 +16,3 @@ describe("Navigation", () => {
   });
 
 });
-
-
-

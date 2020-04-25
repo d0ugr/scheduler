@@ -1,6 +1,13 @@
+// Header.js
+//
+// React component shown above each interview appointment in the schedule.
+//    Displays the appointment time and a divider.
+
 import React from "react";
 
-
+// Header component definition.
+//
+//    props.time   String: Appointment time to show.
 
 export default function Header(props) {
 

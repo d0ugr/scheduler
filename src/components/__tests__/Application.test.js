@@ -1,3 +1,7 @@
+// Application.test.js
+//
+// Jest tests for the Appication component.
+
 import React from "react";
 import {
   render, cleanup, // prettyDOM,
@@ -11,7 +15,7 @@ import Application from "components/Application";
 
 afterEach(cleanup);
 
-
+// Application tests:
 
 describe("Application", () => {
 
@@ -135,6 +139,3 @@ describe("Application", () => {
   });
 
 });
-
-
-

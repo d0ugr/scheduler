@@ -1,6 +1,12 @@
+// Empty.js
+//
+// React component shown for an empty interview appointment time slot.
+
 import React from "react";
 
-
+// Empty component definition.
+//
+//    props.onAdd   Function: Add button callback.
 
 export default function Empty(props) {
 

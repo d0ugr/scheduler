@@ -1,3 +1,7 @@
+// Button.test.js
+//
+// Jest tests for the Button component.
+
 import React from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 
@@ -5,7 +9,7 @@ import Button from "components/Button";
 
 afterEach(cleanup);
 
-
+// Button tests:
 
 it("renders its `children` prop as text", () => {
   const { getByText } = render(<Button>Default</Button>);
@@ -32,11 +36,8 @@ it("renders a clickable button", () => {
   const { getByText } = render(
     <Button onClick={handleClick}>Clickable</Button>
   );
-
   const button = getByText("Clickable");
-
   fireEvent.click(button);
-
   expect(handleClick).toHaveBeenCalledTimes(1);
 });
 
@@ -47,13 +48,7 @@ it("renders a disabled button", () => {
       Disabled
     </Button>
   );
-
   const button = getByText("Disabled");
-
   fireEvent.click(button);
-
   expect(handleClick).toHaveBeenCalledTimes(0);
 });
-
-
-

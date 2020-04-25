@@ -1,3 +1,8 @@
+// InterviewerList.js
+//
+// React component that shows a list of interviewers
+//    for an appointment.
+
 import React     from "react";
 import PropTypes from "prop-types";
 
@@ -5,10 +10,16 @@ import "./InterviewerList.scss";
 
 import InterviewerListItem from "./InterviewerListItem";
 
-
+// InterviewerList component definition.
+//
+//    props.interviewers     Array:    List of available interviewers.
+//    props.interviewer      Number:   Currently selected interviewer ID
+//    props.setInterviewer   Function: Callback to Form for setting the
+//                                       interviewer for an appointment.
 
 export default function InterviewerList(props) {
 
+  // Type checking for props:
   InterviewerList.propTypes = {
     interviewer:    PropTypes.number,
     setInterviewer: PropTypes.func.isRequired

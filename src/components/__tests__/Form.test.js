@@ -1,3 +1,7 @@
+// Form.test.js
+//
+// Jest tests for the Form component.
+
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { fireEvent } from "@testing-library/react";
@@ -6,14 +10,11 @@ import Form from "components/Appointment/Form";
 
 afterEach(cleanup);
 
-
+// Form tests:
 
 describe("Form", () => {
 
-  // it("renders without crashing", () => {
-  //   render(<Form />);
-  // });
-
+  // Fake interviewer data:
   const interviewers = [
     {
       id:     1,
@@ -74,6 +75,3 @@ describe("Form", () => {
   });
 
 });
-
-
-

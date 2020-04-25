@@ -1,6 +1,14 @@
+// Error.js
+//
+// React component shown when an error occurs for an action
+//    being taken on an interview appointment.
+
 import React from "react";
 
-
+// Error component definition.
+//
+//    props.message   String:   Message to display describing the error that occurred.
+//    props.onClose   Function: Close button callback.
 
 export default function Error(props) {
 

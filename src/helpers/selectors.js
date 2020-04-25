@@ -2,8 +2,6 @@
 //
 // Helper functions for managing appointments and interviews.
 
-
-
 // getAppointmentsForDay returns an array of appointment objects for the given day.
 
 export const getAppointmentsForDay = (state, dayId) => {
@@ -15,21 +13,6 @@ export const getAppointmentsForDay = (state, dayId) => {
     return [];
   }
 };
-
-// // updateSpotsForDay returns the number of empty interview appointments for the given day.
-// //    The appointments array can be specified in case you don't want to use the current state
-// //    (i.e. before updating the state).
-
-// export const updateSpotsForDay = (appointments, days, dayId) => {
-//   try {
-//     const day = days.find((day) => day.id === dayId);
-//     day.spots = day.appointments
-//       .filter((appointmentId) => !appointments[appointmentId].interview)
-//       .length;
-//   } catch (err) {
-//     return [];
-//   }
-// };
 
 // getInterviewersForDay returns an array of interviewer objects for the given day.
 
@@ -56,6 +39,3 @@ export const getInterview = (state, interview) => {
     return null;
   }
 };
-
-
-
