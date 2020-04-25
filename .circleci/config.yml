@@ -37,9 +37,18 @@ deploy:
         command: git push https://github.com/d0ugr/scheduler.git master:production
 
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  test-and-deploy:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore: production
+      - deploy:
+          filters:
+            branches:
+              ignore: production
+          requires:
+            - build-and-test
 
 
 
