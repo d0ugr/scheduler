@@ -3,15 +3,46 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-and-test:
+    docker:
+      - image: circleci/node:10.16
+    working_directory: ~/client
     executor:
       name: node/default
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: npm test
 workflows:
     build-and-test:
       jobs:
         - build-and-test
+
+
+
+# Original:
+
+# version: 2.1
+# orbs:
+#   node: circleci/node@1.1.6
+# jobs:
+#   build-and-test:
+#     executor:
+#       name: node/default
+#     steps:
+#       - checkout
+#       - node/with-cache:
+#           steps:
+#             - run: npm install
+#             - run: npm test
+# workflows:
+#     build-and-test:
+#       jobs:
+#         - build-and-test
