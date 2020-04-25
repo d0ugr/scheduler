@@ -1,6 +1,8 @@
 version: 2.1
+
 orbs:
   node: circleci/node@1.1.6
+
 jobs:
   build-and-test:
     docker:
@@ -20,6 +22,20 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: npm test
+
+deploy:
+  machine:
+    enabled: true
+  working_directory: ~/client
+  steps:
+    - add_ssh_keys:
+        fingerprints:
+          - "aa:75:ea:fb:35:1c:a3:4a:04:75:56:40:8f:ae:02:49"
+    - checkout
+    - run:
+        name: Push Master to Production
+        command: git push https://github.com/lighthouse-labs/scheduler.git master:production
+
 workflows:
     build-and-test:
       jobs:
