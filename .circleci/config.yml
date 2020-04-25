@@ -34,7 +34,7 @@ deploy:
     - checkout
     - run:
         name: Push Master to Production
-        command: git push https://github.com/lighthouse-labs/scheduler.git master:production
+        command: git push https://github.com/d0ugr/scheduler.git master:production
 
 workflows:
     build-and-test:
