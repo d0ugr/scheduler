@@ -32,12 +32,12 @@ export default function reducer(state, action) {
     //    appointments   Object   All interview appointment objects.
     //    interviewers   Object   All interviewer objects.
 
-    // case SET_APPLICATION_DATA:
-    //   return util.updateState(state, {
-    //     days:         [ ...(action.days         || state.days        ) ],
-    //     appointments: { ...(action.appointments || state.appointments) },
-    //     interviewers: { ...(action.interviewers || state.interviewers) }
-    //   });
+    case SET_APPLICATION_DATA:
+      return util.updateState(state, {
+        days:         [ ...(action.days         || state.days        ) ],
+        appointments: { ...(action.appointments || state.appointments) },
+        interviewers: { ...(action.interviewers || state.interviewers) }
+      });
 
     // Set the currently selected day in the sidebar.
     //
