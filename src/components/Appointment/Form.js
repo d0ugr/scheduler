@@ -28,13 +28,16 @@ export default function Form(props) {
     errorMessage:  null
   });
 
-  // Validate the student name input:
+  // Validate the form input:
   function validate() {
-    if (state.studentName.trim() !== "") {
+    console.log(typeof state.interviewerId, state.interviewerId)
+    if (state.studentName.trim() === "") {
+      updateState({ errorMessage: "Student name cannot be blank" });
+    } else if (typeof state.interviewerId !== "number") {
+      updateState({ errorMessage: "Please select an interviewer" });
+    } else {
       updateState({ errorMessage: null });
       props.onSave(state.studentName, state.interviewerId)
-    } else {
-      updateState({ errorMessage: "Student name cannot be blank" });
     }
   }
 
