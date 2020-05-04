@@ -30,7 +30,6 @@ export default function Form(props) {
 
   // Validate the form input:
   function validate() {
-    console.log(typeof state.interviewerId, state.interviewerId)
     if (state.studentName.trim() === "") {
       updateState({ errorMessage: "Student name cannot be blank" });
     } else if (typeof state.interviewerId !== "number") {
